@@ -11,28 +11,30 @@ import java.util.List;
 
 public class BlockChain implements Serializable {
 
-    ArrayList<Block> chain = new ArrayList<>();
-    private final String fileName = "curriculos.txt";
+    private List<Block> chain; // A sequência de blocos
+    private final String fileName = "curriculos.txt"; // Nome do ficheiro para salvar a blockchain
 
-    public String getLastBlockHash() {
-        // Gera o hash do último bloco ou o hash da origem (bloco gênese)
-        if (chain.isEmpty()) {
-            return String.format("%08d", 0);
-        }
-        return chain.get(chain.size() - 1).currentHash;
+    public BlockChain() {
+        this.chain = new ArrayList<>();
     }
 
     /**
-     * Adiciona um novo bloco de dados à blockchain.
+     * Obtém o hash do último bloco da cadeia, ou "00000000" se não houver
+     * blocos.
+     */
+    public String getLastBlockHash() {
+        if (chain.isEmpty()) {
+            return "00000000";
+        }
+        return chain.get(chain.size() - 1).getCurrentHash();
+    }
+
+    /**
+     * Adiciona um novo bloco à blockchain.
      */
     public void addBlock(List<Evento> eventos, int difficulty) {
-        if (eventos == null || eventos.isEmpty()) {
-            System.out.println("Erro: Tentativa de adicionar um bloco com eventos nulos ou vazios.");
-            return; // Ou lance uma exceção, dependendo da lógica de negócios
-        }
-
         String prevHash = getLastBlockHash();
-        // Faz o "mining" do bloco (ajuste a função de acordo com sua lógica de dificuldade)
+        // Realiza o "mining" do bloco
         int nonce = Miner.getNonce(prevHash + eventos.toString(), difficulty);
         Block newBlock = new Block(prevHash, eventos, nonce);
         chain.add(newBlock);
@@ -42,18 +44,16 @@ public class BlockChain implements Serializable {
         return chain;
     }
 
-    public Block get(int index) {
-        return chain.get(index);
-    }
-
     public void save() throws Exception {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            // Serializar toda a lista de blocos `chain`
             out.writeObject(chain);
         }
     }
 
     public void load() throws Exception {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+            // Deserializar toda a lista de blocos `chain`
             this.chain = (ArrayList<Block>) in.readObject();
         }
     }
@@ -61,9 +61,9 @@ public class BlockChain implements Serializable {
     @Override
     public String toString() {
         StringBuilder txt = new StringBuilder();
-        txt.append("Blockchain size = " + chain.size() + "\n");
+        txt.append("Blockchain size = ").append(chain.size()).append("\n");
         for (Block block : chain) {
-            txt.append(block.toString() + "\n");
+            txt.append(block.toString()).append("\n");
         }
         return txt.toString();
     }

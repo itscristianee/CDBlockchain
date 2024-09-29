@@ -27,27 +27,27 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="listarNomesBtn" min="-2" pref="131" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="listarEventosBtn" min="-2" pref="131" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="listarCurriculoBtn" min="-2" pref="128" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="adicionarEventoBtn" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="listarNomesBtn" min="-2" pref="131" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="listarEventosBtn" min="-2" pref="131" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="listarCurriculoBtn" min="-2" pref="128" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="listarProvaBtn" min="-2" pref="128" max="-2" attributes="0"/>
+                              <EmptySpace pref="21" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
                               <Component id="carregarBtn" min="-2" pref="131" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="salvarBtn" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="limparBtn" min="-2" pref="131" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="listarProvaBtn" max="32767" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="adicionarEventoBtn" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -86,7 +86,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="acercaDeBtn" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="108" max="32767" attributes="0"/>
+                      <EmptySpace pref="109" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -121,16 +121,16 @@
                   <Component id="listarNomesBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="listarEventosBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="listarCurriculoBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="adicionarEventoBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="listarProvaBtn" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="carregarBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="salvarBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="limparBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="listarProvaBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="adicionarEventoBtn" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="17" max="32767" attributes="0"/>
+              <EmptySpace pref="20" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -230,7 +230,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="listarProvaBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Prova"/>
+        <Property name="text" type="java.lang.String" value="Listar Prova"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="listarProvaBtnActionPerformed"/>

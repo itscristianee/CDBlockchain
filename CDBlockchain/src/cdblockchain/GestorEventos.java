@@ -9,6 +9,9 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -80,11 +83,8 @@ public class GestorEventos {
     }
 
     public void limparArquivo() throws IOException {
-        // Abre o arquivo no modo de escrita sem 'append', o que limpa o conteúdo existente
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminho, false))) {
-            // Escreve uma string vazia para limpar o conteúdo
-            writer.write("");
-        }
+        // Implementação para limpar ou sobrescrever o arquivo 'curriculos.txt'
+        Files.write(Paths.get(caminho), new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
     }
 
 }

@@ -24,8 +24,6 @@ public class Block implements Serializable {
             // Cria uma Merkle Tree para os eventos
             this.merkleTree = new MerkleTreeBytes<>(this.eventos);
         } else {
-            // Adicione uma mensagem de erro ou inicialização alternativa
-            System.out.println("Aviso: Lista de eventos vazia ao criar o bloco.");
             this.merkleTree = null;
         }
 
