@@ -328,7 +328,7 @@ public class form extends javax.swing.JFrame {
         // TODO add your handling code here:
         // Mostra uma janela de diálogo com as informações dos membros do grupo
         JOptionPane.showMessageDialog(this,
-                "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n Joao ",
+                "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n João Campos - 25269 ",
                 "Acerca de...",
                 JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_acercaDeBtnActionPerformed
