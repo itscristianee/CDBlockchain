@@ -47,6 +47,7 @@ public class Block implements Serializable {
         return eventos;
     }
 
+
     /**
      * Obtém a raiz da Merkle Tree associada aos eventos.
      */
