@@ -28,6 +28,6 @@ public class Evento implements Serializable {
 
     @Override
     public String toString() {
-        return "Nome: " + nomePessoa + " | Descrição: " + descricao + " | Entidade: " + entidade;
+        return  nomePessoa + " | " + descricao + " |  " + entidade;
     }
 }

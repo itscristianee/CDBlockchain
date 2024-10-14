@@ -43,6 +43,13 @@ public class Block implements Serializable {
         return Hash.getHash(nonce + previousHash + data);
     }
     
+     public String getData() {
+        System.out.println("Data armazenada no bloco: " + data);
+
+        return data;
+    }
+
+    
     public String getCurrentHash(){
         return currentHash;
     }
