@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package CurriculumDigital;
+package CurriculumDigital.GUI;
 
+import CurriculumDigital.Core.Evento;
+import CurriculumDigital.Core.User;
 import blockchain.utils.Block;
 import blockchain.utils.BlockChain;
 import blockchain.utils.MerkleTree;
@@ -21,16 +23,24 @@ import javax.swing.JOptionPane;
  *
  * @author cristiane
  */
-public class NewJFrame extends javax.swing.JFrame {
+public class FormCurriculum extends javax.swing.JFrame {
 
     BlockChain bloco;
+    User myUser = null;
 
     /**
      * Creates new form NewJFrame
      */
-    public NewJFrame() {
+    public FormCurriculum() {
         initComponents();
         bloco = new BlockChain();
+    }
+
+    public FormCurriculum(User u) {
+        this();
+        this.myUser = u;
+        this.entidadeField.setText(u.getName());
+
     }
 
     /**
@@ -290,7 +300,6 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
         jScrollPane7.setViewportView(txtNovoBloco1);
-        txtNovoBloco1.getAccessibleContext().setAccessibleName("Curriculums");
 
         javax.swing.GroupLayout panel3Layout = new javax.swing.GroupLayout(panel3);
         panel3.setLayout(panel3Layout);
@@ -317,8 +326,6 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGap(0, 9, Short.MAX_VALUE))
         );
 
-        btnVerCurriculum.getAccessibleContext().setAccessibleName("Ver Curriculum");
-
         jTabbedPanePessoas.addTab("tab3", panel3);
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
@@ -326,16 +333,16 @@ public class NewJFrame extends javax.swing.JFrame {
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(7, 7, 7)
                 .addComponent(jTabbedPanePessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPanePessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPanePessoas.getAccessibleContext().setAccessibleName("AddEvento");
@@ -345,11 +352,15 @@ public class NewJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -387,10 +398,9 @@ public class NewJFrame extends javax.swing.JFrame {
 
                 // Cria o evento e o formata como string
                 Evento evento = new Evento(nomePessoa, descricao, entidade);
-                String eventoStr = evento.toString(); // Formatação do evento
 
                 // Adiciona o evento ao campo de texto para visualização
-                txtNovoBloco.append(eventoStr + "\n"); // Usa "\n" para adicionar uma quebra de linha real.
+                txtNovoBloco.append(evento.toString() + "\n"); // Usa "\n" para adicionar uma quebra de linha real.
 
                 // Divide os elementos por linha (caso tenha múltiplos eventos)
                 String[] elementos = txtNovoBloco.getText().split("\\n");
@@ -401,9 +411,9 @@ public class NewJFrame extends javax.swing.JFrame {
 
                 /**
                  * Duvida: Armazena o evento real (não o hash da Merkle Tree) no
-                 * bloco - Guardar o hash(mt.getRoot()) ou evento?
+                 * bloco - Guardar o hash(mt.getRoot()) ou evento(eventoStr)?
                  */
-                bloco.add(eventoStr, (int) spNovoBlockDificuldade.getValue());
+                bloco.add(mt.getRoot(), (int) spNovoBlockDificuldade.getValue());
 
                 // Salva a Merkle Tree em um arquivo (mantém esta funcionalidade)
                 mt.saveToFile(bloco.getLastBlockHash() + ".mkt");
@@ -422,7 +432,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_addEventoButton1ActionPerformed
 
@@ -440,7 +450,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 txtFileName.setText(fc.getSelectedFile().getAbsolutePath());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_btSaveActionPerformed
@@ -470,7 +480,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 lstBlockchain.setModel(model);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_btLoadActionPerformed
@@ -484,7 +494,7 @@ public class NewJFrame extends javax.swing.JFrame {
             merkleGraphics1.setMerkle(mt);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_lstBlockchainValueChanged
 
@@ -514,7 +524,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 }
             }
         }
-        
+
         // Criar o modelo para a JList
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (String nome : nomesPessoas) {
@@ -552,20 +562,21 @@ public class NewJFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewJFrame().setVisible(true);
+                new FormCurriculum().setVisible(true);
             }
         });
     }
