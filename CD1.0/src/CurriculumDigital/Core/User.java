@@ -16,7 +16,6 @@
 package CurriculumDigital.Core;
 
 import blockchain.utils.SecurityUtils;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Key;

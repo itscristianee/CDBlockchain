@@ -5,9 +5,11 @@
 package CurriculumDigital.GUI;
 
 import CurriculumDigital.Core.User;
+import java.io.File;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,14 +17,15 @@ import javax.swing.JOptionPane;
  * @author cristiane
  */
 public class FormLogin extends javax.swing.JFrame {
-    User users;
+
     /**
      * Creates new form FormLogin
      */
     public FormLogin() throws Exception {
-        users= new User();
-        initComponents();
         
+        initComponents();
+        loadUsersFromFiles();
+
     }
 
     /**
@@ -212,7 +215,7 @@ public class FormLogin extends javax.swing.JFrame {
 
             User u = new User(txtLoginUser.getText());
             u.load(new String(txtLoginPass.getPassword()));
-            
+
             String pub = Base64.getEncoder().encodeToString(u.getPub().getEncoded());
             txtPublicKey.setText(pub);
             new FormCurriculum(u).setVisible(true);
@@ -225,7 +228,7 @@ public class FormLogin extends javax.swing.JFrame {
 
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
         try {
-            
+
             // Verifica se o campo de login ou senha está vazio
             if (txtRegisterUser.getText().isEmpty() || txtRegisterPass.getPassword().length == 0) {
                 JOptionPane.showMessageDialog(this, "Preencha todos os campos"); // Corrigido o showMessageDialog
@@ -235,6 +238,10 @@ public class FormLogin extends javax.swing.JFrame {
             u.generateKeys();
             u.save(new String(txtRegisterPass.getPassword()));
             JOptionPane.showMessageDialog(this, "User criado!");
+
+            // Atualiza a lista de usuários
+            loadUsersFromFiles();
+
         } catch (Exception ex) {
             Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Erro ao criar o User!");
@@ -276,10 +283,48 @@ public class FormLogin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormLogin().setVisible(true);
+                try {
+                    new FormLogin().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
+
+    private void loadUsersFromFiles() {
+        try {
+            // Defina o caminho correto onde os arquivos de usuários estão sendo salvos
+            File dir = new File("/Users/cristiane/NetBeansProjects/CurriculumDigitalBlockchain/CD1.0/");
+
+            // Cria um novo modelo para a JList
+            DefaultListModel<String> userListModel = new DefaultListModel<>();
+
+            // Filtra os arquivos que possuem a extensão ".pub" (chaves públicas)
+            File[] files = dir.listFiles((d, name) -> name.endsWith(".pub"));
+
+            // Verifica se existem arquivos .pub encontrados
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    // Extrai o nome do arquivo sem a extensão .pub (nome do usuário)
+                    String fileName = file.getName();
+                    String userName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+                    // Adiciona o nome do usuário ao modelo
+                    userListModel.addElement(userName);
+                }
+
+                // Define o modelo da JList com os nomes dos usuários
+                lstUsers.setModel(userListModel);
+            } else {
+                JOptionPane.showMessageDialog(this, "Nenhum arquivo de usuário .pub encontrado.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao carregar usuários.");
+        }
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btLogin;

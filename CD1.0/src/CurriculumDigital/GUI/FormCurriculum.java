@@ -27,7 +27,7 @@ public class FormCurriculum extends javax.swing.JFrame {
 
     BlockChain bloco;
     User myUser = null;
-
+ 
     /**
      * Creates new form NewJFrame
      */
@@ -40,7 +40,6 @@ public class FormCurriculum extends javax.swing.JFrame {
         this();
         this.myUser = u;
         this.entidadeField.setText(u.getName());
-
     }
 
     /**
@@ -61,10 +60,11 @@ public class FormCurriculum extends javax.swing.JFrame {
         descricaoEventoField = new javax.swing.JTextField();
         entidadeField = new javax.swing.JTextField();
         spNovoBlockDificuldade = new javax.swing.JSpinner();
-        addEventoButton1 = new javax.swing.JButton();
+        btnGerarBloco = new javax.swing.JButton();
         txtFileName = new javax.swing.JTextField();
         btSave = new javax.swing.JButton();
         btLoad = new javax.swing.JButton();
+        addEventoButton = new javax.swing.JButton();
         viewCurrListPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -80,6 +80,7 @@ public class FormCurriculum extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTabbedPanePessoas.setToolTipText("");
+        jTabbedPanePessoas.setName(""); // NOI18N
         jTabbedPanePessoas.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jTabbedPanePessoasStateChanged(evt);
@@ -114,6 +115,7 @@ public class FormCurriculum extends javax.swing.JFrame {
             }
         });
 
+        entidadeField.setEditable(false);
         entidadeField.setToolTipText("");
         entidadeField.setBorder(javax.swing.BorderFactory.createTitledBorder("Entidade Certificadora"));
         entidadeField.addActionListener(new java.awt.event.ActionListener() {
@@ -126,10 +128,10 @@ public class FormCurriculum extends javax.swing.JFrame {
         spNovoBlockDificuldade.setModel(new javax.swing.SpinnerNumberModel(3, 1, 7, 1));
         spNovoBlockDificuldade.setBorder(javax.swing.BorderFactory.createTitledBorder("Dificulty"));
 
-        addEventoButton1.setText("Adicionar Evento(s)");
-        addEventoButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnGerarBloco.setText("Gerar Bloco");
+        btnGerarBloco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addEventoButton1ActionPerformed(evt);
+                btnGerarBlocoActionPerformed(evt);
             }
         });
 
@@ -156,64 +158,74 @@ public class FormCurriculum extends javax.swing.JFrame {
             }
         });
 
+        addEventoButton.setText("Adicionar Evento(s)");
+        addEventoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addEventoButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel2Layout = new javax.swing.GroupLayout(panel2);
         panel2.setLayout(panel2Layout);
         panel2Layout.setHorizontalGroup(
             panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descricaoEventoField, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                    .addComponent(entidadeField)
-                    .addComponent(nomePessoaField)
                     .addGroup(panel2Layout.createSequentialGroup()
-                        .addComponent(spNovoBlockDificuldade, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(addEventoButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(15, 15, 15)
                         .addComponent(btLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btSave, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16))
-                    .addComponent(txtFileName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(panel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnGerarBloco, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(descricaoEventoField)
+                            .addComponent(entidadeField)
+                            .addComponent(nomePessoaField)
+                            .addGroup(panel2Layout.createSequentialGroup()
+                                .addComponent(spNovoBlockDificuldade, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(addEventoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(txtFileName))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         panel2Layout.setVerticalGroup(
             panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panel2Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(nomePessoaField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(descricaoEventoField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(entidadeField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(spNovoBlockDificuldade, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                            .addComponent(addEventoButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btSave, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 7, Short.MAX_VALUE))
-                    .addGroup(panel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane6)))
+                .addContainerGap()
+                .addComponent(jScrollPane6)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(nomePessoaField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(descricaoEventoField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(entidadeField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(spNovoBlockDificuldade, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                    .addComponent(addEventoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnGerarBloco, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addComponent(txtFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btSave, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30))
         );
 
         spNovoBlockDificuldade.getAccessibleContext().setAccessibleName("Dificuldade");
         txtFileName.getAccessibleContext().setAccessibleName("Nome do Ficheiro");
 
-        jTabbedPanePessoas.addTab("tab1", panel2);
+        jTabbedPanePessoas.addTab("Adicionar Evento(s)", panel2);
 
         lstBlockchain.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -226,7 +238,7 @@ public class FormCurriculum extends javax.swing.JFrame {
         merkleGraphics1.setLayout(merkleGraphics1Layout);
         merkleGraphics1Layout.setHorizontalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 480, Short.MAX_VALUE)
+            .addGap(0, 533, Short.MAX_VALUE)
         );
         merkleGraphics1Layout.setVerticalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,7 +252,7 @@ public class FormCurriculum extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(500, Short.MAX_VALUE))
+                .addContainerGap(553, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                     .addContainerGap(187, Short.MAX_VALUE)
@@ -249,12 +261,12 @@ public class FormCurriculum extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(merkleGraphics1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(merkleGraphics1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         javax.swing.GroupLayout viewCurrListPanelLayout = new javax.swing.GroupLayout(viewCurrListPanel);
@@ -269,11 +281,11 @@ public class FormCurriculum extends javax.swing.JFrame {
             viewCurrListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(viewCurrListPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(92, Short.MAX_VALUE))
         );
 
-        jTabbedPanePessoas.addTab("ViewCurr", viewCurrListPanel);
+        jTabbedPanePessoas.addTab("Ver Prova", viewCurrListPanel);
 
         lstPessoas.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -312,7 +324,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                     .addComponent(btnVerCurriculum, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(45, 45, 45)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         panel3Layout.setVerticalGroup(
             panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -323,25 +335,25 @@ public class FormCurriculum extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnVerCurriculum, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 9, Short.MAX_VALUE))
+                .addGap(0, 94, Short.MAX_VALUE))
         );
 
-        jTabbedPanePessoas.addTab("tab3", panel3);
+        jTabbedPanePessoas.addTab("Pessoas", panel3);
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
-                .addGap(7, 7, 7)
-                .addComponent(jTabbedPanePessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(jTabbedPanePessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 745, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPanePessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPanePessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 564, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -352,15 +364,11 @@ public class FormCurriculum extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -382,59 +390,36 @@ public class FormCurriculum extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNovoBlocoKeyTyped
 
-    private void addEventoButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventoButton1ActionPerformed
+    private void btnGerarBlocoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarBlocoActionPerformed
         // TODO add your handling code here:
         try {
-            String nomePessoa = nomePessoaField.getText();
-            String descricao = descricaoEventoField.getText();
-            String entidade = entidadeField.getText();
 
-            if (!nomePessoa.isEmpty() && !descricao.isEmpty() && !entidade.isEmpty()) {
-                /**
-                 * Duvidas: Um bloco pode ter uma lista de eventos? - como seria
-                 * se tivesse? - os dados seriam adicionados a blockchain no
-                 * final?
-                 */
+            // Divide os elementos por linha (caso tenha múltiplos eventos)
+            String[] elementos = txtNovoBloco.getText().split("\\n");
 
-                // Cria o evento e o formata como string
-                Evento evento = new Evento(nomePessoa, descricao, entidade);
+            // Cria a Merkle Tree para os elementos adicionados
+            MerkleTree mt = new MerkleTree(elementos);
+            merkleGraphics1.setMerkle(mt);
 
-                // Adiciona o evento ao campo de texto para visualização
-                txtNovoBloco.append(evento.toString() + "\n"); // Usa "\n" para adicionar uma quebra de linha real.
+            bloco.add(mt.getRoot(), (int) spNovoBlockDificuldade.getValue());
 
-                // Divide os elementos por linha (caso tenha múltiplos eventos)
-                String[] elementos = txtNovoBloco.getText().split("\\n");
+            // Salva a Merkle Tree em um arquivo (mantém esta funcionalidade)
+            mt.saveToFile(bloco.getLastBlockHash() + ".mkt");
 
-                // Cria a Merkle Tree para os elementos adicionados
-                MerkleTree mt = new MerkleTree(elementos);
-                merkleGraphics1.setMerkle(mt);
-
-                /**
-                 * Duvida: Armazena o evento real (não o hash da Merkle Tree) no
-                 * bloco - Guardar o hash(mt.getRoot()) ou evento(eventoStr)?
-                 */
-                bloco.add(mt.getRoot(), (int) spNovoBlockDificuldade.getValue());
-
-                // Salva a Merkle Tree em um arquivo (mantém esta funcionalidade)
-                mt.saveToFile(bloco.getLastBlockHash() + ".mkt");
-
-                // Atualiza a lista gráfica de blocos
-                DefaultListModel model = new DefaultListModel();
-                for (Block elem : bloco.getChain()) {
-                    model.addElement(elem);
-                }
-
-                lstBlockchain.setModel(model);
-
-            } else {
-                JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.");
+            // Atualiza a lista gráfica de blocos
+            DefaultListModel model = new DefaultListModel();
+            for (Block elem : bloco.getChain()) {
+                model.addElement(elem);
             }
+
+            lstBlockchain.setModel(model);
+            JOptionPane.showMessageDialog(this, "Novo bloco gerado!"); // Corrigido o showMessageDialog
 
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
             Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_addEventoButton1ActionPerformed
+    }//GEN-LAST:event_btnGerarBlocoActionPerformed
 
     private void txtFileNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFileNameKeyTyped
         // TODO add your handling code here:
@@ -545,6 +530,32 @@ public class FormCurriculum extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnVerCurriculumActionPerformed
 
+    private void addEventoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventoButtonActionPerformed
+        // TODO add your handling code here:
+        String nomePessoa = nomePessoaField.getText();
+        String descricao = descricaoEventoField.getText();
+        String entidade = entidadeField.getText();
+
+        if (!nomePessoa.isEmpty() && !descricao.isEmpty() && !entidade.isEmpty()) {
+            /**
+             * Duvidas: Um bloco pode ter uma lista de eventos? - como seria se
+             * tivesse? - os dados seriam adicionados a blockchain no final?
+             */
+
+            // Cria o evento e o formata como string
+            Evento evento = new Evento(nomePessoa, descricao, entidade);
+            String eventoStr = evento.toString(); // Formatação do evento
+
+            // Adiciona o evento ao campo de texto para visualização
+            txtNovoBloco.append(eventoStr + "\n"); // Usa "\n" para adicionar uma quebra de linha real.
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.");
+        }
+
+
+    }//GEN-LAST:event_addEventoButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -582,9 +593,10 @@ public class FormCurriculum extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addEventoButton1;
+    private javax.swing.JButton addEventoButton;
     private javax.swing.JButton btLoad;
     private javax.swing.JButton btSave;
+    private javax.swing.JButton btnGerarBloco;
     private javax.swing.JButton btnVerCurriculum;
     private javax.swing.JTextField descricaoEventoField;
     private javax.swing.JTextField entidadeField;

@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 // Tornar a classe pública para que possa ser acessada fora do pacote
 public class Evento implements Serializable {
+
     private String nomePessoa;
     private String descricao;
     private String entidade;
@@ -21,13 +22,20 @@ public class Evento implements Serializable {
         this.descricao = descricao;
         this.entidade = entidade;
     }
-    
+
     public String getNomePessoa() {
         return nomePessoa;
     }
 
+    /**
+     * @return the entidade
+     */
+    public String getEntidade() {
+        return entidade;
+    }
+
     @Override
     public String toString() {
-        return  nomePessoa + " | " + descricao + " |  " + entidade;
+        return nomePessoa + " | " + descricao + " |  " + getEntidade();
     }
 }
