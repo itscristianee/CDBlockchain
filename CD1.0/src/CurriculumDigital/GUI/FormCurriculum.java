@@ -4,13 +4,11 @@
  */
 package CurriculumDigital.GUI;
 
-import CurriculumDigital.Core.Curriculum;
 import CurriculumDigital.Core.Evento;
 import CurriculumDigital.Core.User;
 import blockchain.utils.Block;
 import blockchain.utils.BlockChain;
 import blockchain.utils.MerkleTree;
-import blockchain.utils.ObjectUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,8 +29,10 @@ public class FormCurriculum extends javax.swing.JFrame {
 
     BlockChain bloco;
     User myUser = null;
+    MerkleTree mt;
     // Lista de eventos que é mantida durante a execução
     private List<Evento> lstEventos;
+    private List<Evento> lstBuffer;
 
     /**
      * Creates new form NewJFrame
@@ -40,6 +40,7 @@ public class FormCurriculum extends javax.swing.JFrame {
     public FormCurriculum() {
         initComponents();
         bloco = new BlockChain();
+        mt = new MerkleTree();
         lstEventos = new ArrayList<>();
     }
 
@@ -59,7 +60,7 @@ public class FormCurriculum extends javax.swing.JFrame {
     private void initComponents() {
 
         panel1 = new java.awt.Panel();
-        jTabbedPanePessoas = new javax.swing.JTabbedPane();
+        jTabbedMerkleTree = new javax.swing.JTabbedPane();
         panel2 = new java.awt.Panel();
         jScrollPane6 = new javax.swing.JScrollPane();
         txtEventos = new javax.swing.JTextArea();
@@ -86,11 +87,11 @@ public class FormCurriculum extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTabbedPanePessoas.setToolTipText("");
-        jTabbedPanePessoas.setName(""); // NOI18N
-        jTabbedPanePessoas.addChangeListener(new javax.swing.event.ChangeListener() {
+        jTabbedMerkleTree.setToolTipText("");
+        jTabbedMerkleTree.setName(""); // NOI18N
+        jTabbedMerkleTree.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jTabbedPanePessoasStateChanged(evt);
+                jTabbedMerkleTreeStateChanged(evt);
             }
         });
 
@@ -231,7 +232,7 @@ public class FormCurriculum extends javax.swing.JFrame {
         spNovoBlockDificuldade.getAccessibleContext().setAccessibleName("Dificuldade");
         txtFileName.getAccessibleContext().setAccessibleName("Nome do Ficheiro");
 
-        jTabbedPanePessoas.addTab("Adicionar Evento(s)", panel2);
+        jTabbedMerkleTree.addTab("Adicionar Evento(s)", panel2);
 
         lstBlockchain.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -291,7 +292,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                 .addContainerGap(92, Short.MAX_VALUE))
         );
 
-        jTabbedPanePessoas.addTab("Ver Prova", viewCurrListPanel);
+        jTabbedMerkleTree.addTab("Ver Prova", viewCurrListPanel);
 
         lstPessoas.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -344,7 +345,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                 .addGap(0, 94, Short.MAX_VALUE))
         );
 
-        jTabbedPanePessoas.addTab("Pessoas", panel3);
+        jTabbedMerkleTree.addTab("Pessoas", panel3);
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
@@ -352,19 +353,18 @@ public class FormCurriculum extends javax.swing.JFrame {
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jTabbedPanePessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 745, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedMerkleTree, javax.swing.GroupLayout.PREFERRED_SIZE, 745, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPanePessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 564, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedMerkleTree, javax.swing.GroupLayout.PREFERRED_SIZE, 564, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPanePessoas.getAccessibleContext().setAccessibleName("AddEvento");
-        jTabbedPanePessoas.getAccessibleContext().setAccessibleDescription("AddEvento");
+        jTabbedMerkleTree.getAccessibleContext().setAccessibleName("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -400,11 +400,10 @@ public class FormCurriculum extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
 
-            // Divide os elementos por linha (caso tenha múltiplos eventos)
-            String[] elementos = txtEventos.getText().split("\\n");
-
+            
             // Cria a Merkle Tree para os elementos adicionados
-            MerkleTree mt = new MerkleTree(elementos);
+            mt = new MerkleTree(lstBuffer);
+            lstBuffer.clear();
             merkleGraphics1.setMerkle(mt);
 
             bloco.add(mt.getRoot(), (int) spNovoBlockDificuldade.getValue());
@@ -453,6 +452,7 @@ public class FormCurriculum extends javax.swing.JFrame {
             try {
                 // Carregar a blockchain a partir do arquivo selecionado
                 bloco.load(fc.getSelectedFile().getAbsolutePath());
+
                 txtFileName.setText(fc.getSelectedFile().getAbsolutePath());
 
                 // Limpar o campo de texto `txtEventos` para garantir que ele esteja vazio antes de listar os eventos
@@ -464,31 +464,18 @@ public class FormCurriculum extends javax.swing.JFrame {
                 // Atualizar a lista gráfica de blocos
                 DefaultListModel model = new DefaultListModel();
 
+                lstEventos.clear();
                 for (Block b : bloco.getChain()) {
                     // Adicionar o bloco ao modelo da lista gráfica
                     model.addElement(b);
-
-                    // Converter os dados armazenados no bloco para um objeto `Evento`
-                    Evento e = (Evento) ObjectUtils.convertBase64ToObject(b.getData());
-
-                    // Verificar se a conversão foi bem-sucedida antes de adicionar
-                    if (e != null) {
-                        lstEventos.add(e);
-                    }
+                    // Carregar a Merkle Tree a partir do arquivo associado ao bloco
+                    MerkleTree mt = MerkleTree.loadFromFile(b.calculateHash() + ".mkt");
+                    lstEventos.addAll(mt.getElements());
                 }
-
-               // Criar o modelo para a JList
-                DefaultListModel<String> listModel = new DefaultListModel<>();
-         
-        // Adicionar os dados do `lstEventos` ao `txtEventos` e lstPessoas
-                for (Evento evento : lstEventos) {
-                    txtEventos.append(evento.toString() + "\n");
-                    listModel.addElement(evento.getNomePessoa());
-                }
-                lstPessoas.setModel(listModel);
-
                 // Atualizar o modelo da lista gráfica da blockchain
                 lstBlockchain.setModel(model);
+                  txtEventos.setText(lstEventos.toString());
+                
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
@@ -512,7 +499,7 @@ public class FormCurriculum extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lstBlockchainValueChanged
 
-    private void jTabbedPanePessoasStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPanePessoasStateChanged
+    private void jTabbedMerkleTreeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedMerkleTreeStateChanged
         // TODO add your handling code here:
 
         // Verifica se 'bloco' foi inicializado
@@ -544,7 +531,7 @@ public class FormCurriculum extends javax.swing.JFrame {
             listModel.addElement(evento.getNomePessoa());
         }
         lstPessoas.setModel(listModel);
-    }//GEN-LAST:event_jTabbedPanePessoasStateChanged
+    }//GEN-LAST:event_jTabbedMerkleTreeStateChanged
 
     private void lstPessoasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstPessoasValueChanged
         // TODO add your handling code here:
@@ -566,6 +553,7 @@ public class FormCurriculum extends javax.swing.JFrame {
         if (!nomePessoa.isEmpty() && !descricao.isEmpty() && !entidade.isEmpty()) {
             // Criar o evento
             Evento evento = new Evento(nomePessoa, descricao, entidade);
+            lstBuffer.add(evento);
 
             // Formatar o evento como string e adicionar ao campo de texto para visualização
             txtEventos.append(evento.toString() + "\n");
@@ -626,7 +614,7 @@ public class FormCurriculum extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JTabbedPane jTabbedPanePessoas;
+    private javax.swing.JTabbedPane jTabbedMerkleTree;
     private javax.swing.JList<String> lstBlockchain;
     private javax.swing.JList<String> lstPessoas;
     private blockchain.GUI.MerkleGraphics merkleGraphics1;
