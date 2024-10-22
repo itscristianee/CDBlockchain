@@ -33,47 +33,71 @@ import java.util.List;
  */
 public class Curriculum implements Serializable {
 
-    blockchain.utils.BlockChain bc ;
+    private ArrayList<Evento> eventos;
+    blockchain.utils.BlockChain bloco;
     public static int DIFICULTY = 4;
 
-    public Curriculum() throws Exception {
-       }
+    public Curriculum(BlockChain bloco) throws Exception {
+        this.bloco = bloco;
+    }
 
-    
+    public int quantEventos(String user) {
+        int total = 0;
 
-    public void save(String fileName) throws IOException {
-        try ( ObjectOutputStream out = new ObjectOutputStream(
-                new FileOutputStream(fileName))) {
-            out.writeObject(this);
+        for (Evento evento : eventos) {
+            if (evento.getEntidade().equals(user)) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
+    public boolean isValid(Evento e) throws Exception {
+        if (e.getNomePessoa().trim().isEmpty()) {
+            throw new Exception("Name is empty");
+        }
+        if (e.getEntidade().trim().isEmpty()) {
+            throw new Exception("Entidade is empty");
+        }
+        if (e.getDescricao().trim().isEmpty()) {
+            throw new Exception("Descricao is empty");
+        }
+
+        return true;
+    }
+
+    public void add(Evento e) throws Exception {
+        if (isValid(e)) {
+            ledger.add(t);
+            String txtTransaction = ObjectUtils.convertObjectToBase64(t);
+            bloco.add(txtTransaction, DIFICULTY);
+        } else {
+            throw new Exception("Transaction not valid");
         }
     }
 
-    public static Curriculum load(String fileName) throws IOException, ClassNotFoundException {
-        try ( ObjectInputStream in = new ObjectInputStream(
-                new FileInputStream(fileName))) {
-            return (Curriculum) in.readObject();
+    public List<Evento> getEventosBlockchain() throws Exception {
+        List<Evento> lst = new ArrayList<>();
+        for (Block b : bloco.getChain()) {
+            Evento t = (Evento) ObjectUtils.convertBase64ToObject(b.getData());
+            lst.add(t);
         }
+        return lst;
     }
-
-    
-
-    
-    
 
     public List<String> getUsers() {
         ArrayList<String> users = new ArrayList<>();
-        
         //get Users
-        for (Evento evento : eventos) {
-            if (!users.contains(evento.getEntidade())) {
-                users.add(evento.getEntidade());
+        for (Evento evento : bloco) {
+            if (!users.contains(transaction.getFrom())) {
+                users.add(transaction.getFrom());
             }
-            
+            if (!users.contains(transaction.getTo())) {
+                users.add(transaction.getTo());
+            }
         }
-        
+
         return users;
     }
-
-
-
 }

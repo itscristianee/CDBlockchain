@@ -44,8 +44,7 @@ public class Block implements Serializable {
     }
     
      public String getData() {
-        System.out.println("Data armazenada no bloco: " + data);
-         return data;
+        return data;
     }
 
     
