@@ -33,6 +33,8 @@ public class FormCurriculum extends javax.swing.JFrame {
     // Lista de eventos que é mantida durante a execução
     private List<Evento> lstEventos;
     private List<Evento> lstBuffer;
+    private DefaultListModel listModel;
+    String nome;
 
     /**
      * Creates new form NewJFrame
@@ -41,7 +43,14 @@ public class FormCurriculum extends javax.swing.JFrame {
         initComponents();
         bloco = new BlockChain();
         mt = new MerkleTree();
+        lstBuffer = new ArrayList<>();
         lstEventos = new ArrayList<>();
+        listModel = new DefaultListModel();
+        jPAdd.setVisible(true);
+        jPVerProva.setVisible(false);
+        jPPessoas.setVisible(false);
+        // Centralizar o formulário na tela
+        setLocationRelativeTo(null);
     }
 
     public FormCurriculum(User u) {
@@ -59,41 +68,159 @@ public class FormCurriculum extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panel1 = new java.awt.Panel();
-        jTabbedMerkleTree = new javax.swing.JTabbedPane();
-        panel2 = new java.awt.Panel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        txtEventos = new javax.swing.JTextArea();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        btAdicionar = new javax.swing.JButton();
+        btPessoas = new javax.swing.JButton();
+        btAcerca2 = new javax.swing.JButton();
+        btVerProva = new javax.swing.JButton();
+        jPAdd = new javax.swing.JPanel();
         nomePessoaField = new javax.swing.JTextField();
         descricaoEventoField = new javax.swing.JTextField();
         entidadeField = new javax.swing.JTextField();
         spNovoBlockDificuldade = new javax.swing.JSpinner();
+        addEventoButton = new javax.swing.JButton();
         btnGerarBloco = new javax.swing.JButton();
         txtFileName = new javax.swing.JTextField();
-        btSave = new javax.swing.JButton();
         btLoad = new javax.swing.JButton();
-        addEventoButton = new javax.swing.JButton();
-        viewCurrListPanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        btSave = new javax.swing.JButton();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        txtEventos = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jPVerProva = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         lstBlockchain = new javax.swing.JList<>();
         merkleGraphics1 = new blockchain.GUI.MerkleGraphics();
-        panel3 = new java.awt.Panel();
+        jPPessoas = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         lstPessoas = new javax.swing.JList<>();
-        btnVerCurriculum = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
-        txtNovoBloco1 = new javax.swing.JTextArea();
+        txtCurriculums = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
-        jTabbedMerkleTree.setToolTipText("");
-        jTabbedMerkleTree.setName(""); // NOI18N
-        jTabbedMerkleTree.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jTabbedMerkleTreeStateChanged(evt);
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new java.awt.CardLayout());
+
+        jPanel5.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.hoverBorderColor"));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel3.setFont(new java.awt.Font("Trattatello", 1, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Curriculum Digital");
+        jPanel5.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 23, 165, 37));
+
+        btAdicionar.setText("Adicionar");
+        btAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAdicionarjButton1ActionPerformed(evt);
             }
         });
+        jPanel5.add(btAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 78, 140, 58));
+
+        btPessoas.setText("Pessoas");
+        btPessoas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btPessoasActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btPessoas, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 170, 140, 58));
+
+        btAcerca2.setText("Acerca");
+        btAcerca2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAcerca2btAcercaActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btAcerca2, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 352, 140, 58));
+
+        btVerProva.setText("Ver Prova");
+        btVerProva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btVerProvaActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btVerProva, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 260, 140, 58));
+
+        jPAdd.setBackground(new java.awt.Color(255, 255, 255));
+        jPAdd.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        nomePessoaField.setToolTipText("");
+        nomePessoaField.setBorder(javax.swing.BorderFactory.createTitledBorder("Nome da Pessoa"));
+        nomePessoaField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nomePessoaFieldActionPerformed(evt);
+            }
+        });
+        jPAdd.add(nomePessoaField, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, 238, -1));
+
+        descricaoEventoField.setToolTipText("");
+        descricaoEventoField.setBorder(javax.swing.BorderFactory.createTitledBorder("Descrição do Evento"));
+        descricaoEventoField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                descricaoEventoFieldActionPerformed(evt);
+            }
+        });
+        jPAdd.add(descricaoEventoField, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 65, 238, -1));
+
+        entidadeField.setEditable(false);
+        entidadeField.setToolTipText("");
+        entidadeField.setBorder(javax.swing.BorderFactory.createTitledBorder("Entidade Certificadora"));
+        entidadeField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                entidadeFieldActionPerformed(evt);
+            }
+        });
+        jPAdd.add(entidadeField, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 124, 238, -1));
+
+        spNovoBlockDificuldade.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        spNovoBlockDificuldade.setModel(new javax.swing.SpinnerNumberModel(3, 1, 7, 1));
+        spNovoBlockDificuldade.setBorder(javax.swing.BorderFactory.createTitledBorder("Dificulty"));
+        jPAdd.add(spNovoBlockDificuldade, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 183, 75, 55));
+
+        addEventoButton.setText("Adicionar Evento(s)");
+        addEventoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addEventoButtonActionPerformed(evt);
+            }
+        });
+        jPAdd.add(addEventoButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 183, 151, 55));
+
+        btnGerarBloco.setText("Gerar Bloco");
+        btnGerarBloco.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGerarBlocoActionPerformed(evt);
+            }
+        });
+        jPAdd.add(btnGerarBloco, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 256, 238, 43));
+
+        txtFileName.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        txtFileName.setText("./blockchain.obj");
+        txtFileName.setBorder(javax.swing.BorderFactory.createTitledBorder("File Name"));
+        txtFileName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFileNameKeyTyped(evt);
+            }
+        });
+        jPAdd.add(txtFileName, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 317, 238, -1));
+
+        btLoad.setText("Load");
+        btLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLoadActionPerformed(evt);
+            }
+        });
+        jPAdd.add(btLoad, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 376, 111, 51));
+
+        btSave.setText("Save");
+        btSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSaveActionPerformed(evt);
+            }
+        });
+        jPAdd.add(btSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(135, 376, 111, 51));
 
         txtEventos.setEditable(false);
         txtEventos.setColumns(20);
@@ -107,132 +234,14 @@ public class FormCurriculum extends javax.swing.JFrame {
         });
         jScrollPane6.setViewportView(txtEventos);
 
-        nomePessoaField.setToolTipText("");
-        nomePessoaField.setBorder(javax.swing.BorderFactory.createTitledBorder("Nome da Pessoa"));
-        nomePessoaField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nomePessoaFieldActionPerformed(evt);
-            }
-        });
+        jPAdd.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(252, 16, 330, 410));
 
-        descricaoEventoField.setToolTipText("");
-        descricaoEventoField.setBorder(javax.swing.BorderFactory.createTitledBorder("Descrição do Evento"));
-        descricaoEventoField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                descricaoEventoFieldActionPerformed(evt);
-            }
-        });
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Nome da pessoa | Descrição | Entidade");
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jPAdd.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 0, 330, -1));
 
-        entidadeField.setEditable(false);
-        entidadeField.setToolTipText("");
-        entidadeField.setBorder(javax.swing.BorderFactory.createTitledBorder("Entidade Certificadora"));
-        entidadeField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                entidadeFieldActionPerformed(evt);
-            }
-        });
-
-        spNovoBlockDificuldade.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        spNovoBlockDificuldade.setModel(new javax.swing.SpinnerNumberModel(3, 1, 7, 1));
-        spNovoBlockDificuldade.setBorder(javax.swing.BorderFactory.createTitledBorder("Dificulty"));
-
-        btnGerarBloco.setText("Gerar Bloco");
-        btnGerarBloco.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGerarBlocoActionPerformed(evt);
-            }
-        });
-
-        txtFileName.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
-        txtFileName.setText("./blockchain.obj");
-        txtFileName.setBorder(javax.swing.BorderFactory.createTitledBorder("File Name"));
-        txtFileName.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtFileNameKeyTyped(evt);
-            }
-        });
-
-        btSave.setText("Save");
-        btSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btSaveActionPerformed(evt);
-            }
-        });
-
-        btLoad.setText("Load");
-        btLoad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLoadActionPerformed(evt);
-            }
-        });
-
-        addEventoButton.setText("Adicionar Evento(s)");
-        addEventoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addEventoButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panel2Layout = new javax.swing.GroupLayout(panel2);
-        panel2.setLayout(panel2Layout);
-        panel2Layout.setHorizontalGroup(
-            panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panel2Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(btLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btSave, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(panel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnGerarBloco, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(descricaoEventoField)
-                            .addComponent(entidadeField)
-                            .addComponent(nomePessoaField)
-                            .addGroup(panel2Layout.createSequentialGroup()
-                                .addComponent(spNovoBlockDificuldade, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(addEventoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 71, Short.MAX_VALUE))
-                            .addComponent(txtFileName))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(69, 69, 69))
-        );
-        panel2Layout.setVerticalGroup(
-            panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(nomePessoaField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(descricaoEventoField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(entidadeField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(spNovoBlockDificuldade, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                    .addComponent(addEventoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGerarBloco, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
-                .addComponent(txtFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btSave, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30))
-            .addGroup(panel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane6))
-        );
-
-        spNovoBlockDificuldade.getAccessibleContext().setAccessibleName("Dificuldade");
-        txtFileName.getAccessibleContext().setAccessibleName("Nome do Ficheiro");
-
-        jTabbedMerkleTree.addTab("Adicionar Evento(s)", panel2);
+        jPVerProva.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lstBlockchain.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -241,58 +250,22 @@ public class FormCurriculum extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(lstBlockchain);
 
+        jPVerProva.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 200, 390));
+
         javax.swing.GroupLayout merkleGraphics1Layout = new javax.swing.GroupLayout(merkleGraphics1);
         merkleGraphics1.setLayout(merkleGraphics1Layout);
         merkleGraphics1Layout.setHorizontalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 533, Short.MAX_VALUE)
+            .addGap(0, 370, Short.MAX_VALUE)
         );
         merkleGraphics1Layout.setVerticalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 423, Short.MAX_VALUE)
+            .addGap(0, 390, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(553, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                    .addContainerGap(187, Short.MAX_VALUE)
-                    .addComponent(merkleGraphics1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(merkleGraphics1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
+        jPVerProva.add(merkleGraphics1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, 370, 390));
 
-        javax.swing.GroupLayout viewCurrListPanelLayout = new javax.swing.GroupLayout(viewCurrListPanel);
-        viewCurrListPanel.setLayout(viewCurrListPanelLayout);
-        viewCurrListPanelLayout.setHorizontalGroup(
-            viewCurrListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(viewCurrListPanelLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        viewCurrListPanelLayout.setVerticalGroup(
-            viewCurrListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(viewCurrListPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(92, Short.MAX_VALUE))
-        );
-
-        jTabbedMerkleTree.addTab("Ver Prova", viewCurrListPanel);
+        jPPessoas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lstPessoas.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -301,109 +274,131 @@ public class FormCurriculum extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(lstPessoas);
 
-        btnVerCurriculum.setText("Ver Curriculum");
-        btnVerCurriculum.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVerCurriculumActionPerformed(evt);
-            }
-        });
+        jPPessoas.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 190, 370));
 
-        txtNovoBloco1.setEditable(false);
-        txtNovoBloco1.setColumns(20);
-        txtNovoBloco1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        txtNovoBloco1.setRows(5);
-        txtNovoBloco1.setBorder(javax.swing.BorderFactory.createTitledBorder("Curriculums"));
-        txtNovoBloco1.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtCurriculums.setEditable(false);
+        txtCurriculums.setColumns(20);
+        txtCurriculums.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        txtCurriculums.setRows(5);
+        txtCurriculums.setBorder(javax.swing.BorderFactory.createTitledBorder("Curriculums"));
+        txtCurriculums.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNovoBloco1KeyTyped(evt);
+                txtCurriculumsKeyTyped(evt);
             }
         });
-        jScrollPane7.setViewportView(txtNovoBloco1);
+        jScrollPane7.setViewportView(txtCurriculums);
 
-        javax.swing.GroupLayout panel3Layout = new javax.swing.GroupLayout(panel3);
-        panel3.setLayout(panel3Layout);
-        panel3Layout.setHorizontalGroup(
-            panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                    .addComponent(btnVerCurriculum, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(45, 45, 45)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(98, Short.MAX_VALUE))
-        );
-        panel3Layout.setVerticalGroup(
-            panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel3Layout.createSequentialGroup()
-                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnVerCurriculum, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 94, Short.MAX_VALUE))
-        );
-
-        jTabbedMerkleTree.addTab("Pessoas", panel3);
-
-        javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
-        panel1.setLayout(panel1Layout);
-        panel1Layout.setHorizontalGroup(
-            panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jTabbedMerkleTree, javax.swing.GroupLayout.PREFERRED_SIZE, 745, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        panel1Layout.setVerticalGroup(
-            panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedMerkleTree, javax.swing.GroupLayout.PREFERRED_SIZE, 564, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jTabbedMerkleTree.getAccessibleContext().setAccessibleName("");
+        jPPessoas.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(212, 10, 360, 240));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(164, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPVerProva, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPAdd, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(170, Short.MAX_VALUE)
+                    .addComponent(jPPessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 587, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(378, 378, 378))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPVerProva, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 1, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE))
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(jPPessoas, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void entidadeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entidadeFieldActionPerformed
+    private void btAdicionarjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAdicionarjButton1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_entidadeFieldActionPerformed
+        jPAdd.setVisible(true);
+        jPPessoas.setVisible(false);
+        jPVerProva.setVisible(false);
 
-    private void descricaoEventoFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descricaoEventoFieldActionPerformed
+    }//GEN-LAST:event_btAdicionarjButton1ActionPerformed
+
+    private void btAcerca2btAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAcerca2btAcercaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_descricaoEventoFieldActionPerformed
+        // TODO add your handling code here:
+        // Mostra uma janela de diálogo com as informações dos membros do grupo
+        JOptionPane.showMessageDialog(this,
+                "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n Joao Campos - 25269 ",
+                "Acerca de...",
+                JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btAcerca2btAcercaActionPerformed
 
     private void nomePessoaFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomePessoaFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nomePessoaFieldActionPerformed
 
-    private void txtEventosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEventosKeyTyped
+    private void descricaoEventoFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descricaoEventoFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtEventosKeyTyped
+    }//GEN-LAST:event_descricaoEventoFieldActionPerformed
+
+    private void entidadeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entidadeFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_entidadeFieldActionPerformed
+
+    private void addEventoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventoButtonActionPerformed
+        // TODO add your handling code here:
+        String nomePessoa = nomePessoaField.getText();
+        String descricao = descricaoEventoField.getText();
+        String entidade = entidadeField.getText();
+        if (!nomePessoa.isEmpty() && !descricao.isEmpty() && !entidade.isEmpty()) {
+            // Criar o evento
+            Evento evento = new Evento(nomePessoa, descricao, entidade);
+
+            // Adicionar o nome da pessoa ao DefaultListModel existente
+            if (!listModel.contains(nomePessoa)) {
+                listModel.addElement(nomePessoa);
+                lstPessoas.setModel(listModel);  // Associar o modelo à JList
+            }
+            lstBuffer.add(evento);
+            lstEventos.add(evento);
+            // Formatar o evento como string e adicionar ao campo de texto para visualização
+            txtEventos.append(evento.toString() + "\n");
+            // Limpar os campos de texto
+            nomePessoaField.setText("");
+            descricaoEventoField.setText("");
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.");
+        }
+    }//GEN-LAST:event_addEventoButtonActionPerformed
 
     private void btnGerarBlocoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarBlocoActionPerformed
         // TODO add your handling code here:
         try {
 
-            
             // Cria a Merkle Tree para os elementos adicionados
             mt = new MerkleTree(lstBuffer);
-            lstBuffer.clear();
+
             merkleGraphics1.setMerkle(mt);
 
             bloco.add(mt.getRoot(), (int) spNovoBlockDificuldade.getValue());
@@ -422,28 +417,13 @@ public class FormCurriculum extends javax.swing.JFrame {
 
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGerarBlocoActionPerformed
 
     private void txtFileNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFileNameKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFileNameKeyTyped
-
-    private void btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveActionPerformed
-        // TODO add your handling code here:
-        JFileChooser fc = new JFileChooser(new File("."));
-
-        if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                bloco.save(fc.getSelectedFile().getAbsolutePath());
-                txtFileName.setText(fc.getSelectedFile().getAbsolutePath());
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_btSaveActionPerformed
 
     private void btLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoadActionPerformed
         // Selecionar arquivo através do JFileChooser
@@ -458,33 +438,92 @@ public class FormCurriculum extends javax.swing.JFrame {
                 // Limpar o campo de texto `txtEventos` para garantir que ele esteja vazio antes de listar os eventos
                 txtEventos.setText("");
 
-                // Limpar a lista de eventos (`lstEventos`) para evitar duplicação
-                lstEventos.clear();
-
                 // Atualizar a lista gráfica de blocos
                 DefaultListModel model = new DefaultListModel();
 
                 lstEventos.clear();
+                Set<String> eventosAdicionados = new HashSet<>();
+
                 for (Block b : bloco.getChain()) {
                     // Adicionar o bloco ao modelo da lista gráfica
                     model.addElement(b);
                     // Carregar a Merkle Tree a partir do arquivo associado ao bloco
                     MerkleTree mt = MerkleTree.loadFromFile(b.calculateHash() + ".mkt");
-                    lstEventos.addAll(mt.getElements());
+
+                    // Adicionar cada evento individualmente ao campo txtEventos e extrair os nomes
+                    for (Object obj : mt.getElements()) {
+                        String eventoStr = (String) obj;  // Tratar o evento como String
+                        String[] partes = eventoStr.split(" \\| ");
+                        if (partes.length == 3) {
+                            String nomePessoa = partes[0].trim();
+                            String descricao = partes[1].trim();
+                            String entidade = partes[2].trim();
+
+                            // Criar um novo objeto Evento
+                            Evento evento = new Evento(nomePessoa, descricao, entidade);
+                            lstEventos.add(evento);
+                            // Verificar se o evento já foi adicionado ao txtEventos
+                            if (!eventosAdicionados.contains(evento.toString())) {
+                                // Adicionar ao campo txtEventos
+                                txtEventos.append(evento.toString() + "\n");
+
+                                // Marcar o evento como adicionado
+                                eventosAdicionados.add(evento.toString());
+
+                                // Adicionar o nome da pessoa ao modelo da JList (evitar duplicatas)
+                                if (!listModel.contains(evento.getNomePessoa())) {
+                                    listModel.addElement(evento.getNomePessoa());
+                                }
+                            }
+                        }
+                    }
+
                 }
                 // Atualizar o modelo da lista gráfica da blockchain
                 lstBlockchain.setModel(model);
-                  txtEventos.setText(lstEventos.toString());
-                
+                // Atualizar a JList de nomes
+                lstPessoas.setModel(listModel);  // Associa o modelo de nomes à JList de pessoas
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-
     }//GEN-LAST:event_btLoadActionPerformed
+
+    private void btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fc = new JFileChooser(new File("."));
+
+        if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                bloco.save(fc.getSelectedFile().getAbsolutePath());
+                txtFileName.setText(fc.getSelectedFile().getAbsolutePath());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+                Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btSaveActionPerformed
+
+    private void txtEventosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEventosKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEventosKeyTyped
+
+    private void btPessoasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPessoasActionPerformed
+        // TODO add your handling code here:
+        jPPessoas.setVisible(true);
+        jPVerProva.setVisible(false);
+        jPAdd.setVisible(false);
+    }//GEN-LAST:event_btPessoasActionPerformed
+
+    private void btVerProvaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btVerProvaActionPerformed
+        // TODO add your handling code here:
+
+        jPVerProva.setVisible(true);
+        jPPessoas.setVisible(false);
+        jPAdd.setVisible(false);
+    }//GEN-LAST:event_btVerProvaActionPerformed
 
     private void lstBlockchainValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstBlockchainValueChanged
         // TODO add your handling code here:
@@ -495,75 +534,32 @@ public class FormCurriculum extends javax.swing.JFrame {
             merkleGraphics1.setMerkle(mt);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_lstBlockchainValueChanged
 
-    private void jTabbedMerkleTreeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedMerkleTreeStateChanged
-        // TODO add your handling code here:
-
-        // Verifica se 'bloco' foi inicializado
-        if (bloco == null) {
-            return;  // Saia do método se bloco for nulo
-        }
-
-        // Usamos um Set para evitar nomes duplicados
-        Set<String> nomesPessoas = new HashSet<>();
-
-        /* // Percorre todos os blocos na blockchain
-        for (Block bloco : bloco.getChain()) {
-            // O campo data contém a string no formato "nomePessoa | descricao | entidade"
-            String eventoStr = bloco.getData();  // Obtém a string de dados do bloco
-
-            // Verifica se o campo data contém a estrutura correta
-            if (eventoStr != null && !eventoStr.isEmpty()) {
-                // Divide a string para separar os campos (nomePessoa, descricao, entidade)
-                String[] partesEvento = eventoStr.split(" \\| ");
-                if (partesEvento.length > 0) {
-                    String nomePessoa = partesEvento[0];  // Nome da pessoa está na primeira parte
-                    nomesPessoas.add(nomePessoa);  // Adiciona o nome ao Set (sem duplicatas)
-                }
-            }
-        }*/
-        // Criar o modelo para a JList
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (Evento evento : lstEventos) {
-            listModel.addElement(evento.getNomePessoa());
-        }
-        lstPessoas.setModel(listModel);
-    }//GEN-LAST:event_jTabbedMerkleTreeStateChanged
-
     private void lstPessoasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstPessoasValueChanged
         // TODO add your handling code here:
+        // Capturar a pessoa selecionada
+        String pessoaSelecionada = lstPessoas.getSelectedValue();
+
+        if (pessoaSelecionada != null) {
+            // Limpar o campo de eventos antes de exibir os eventos filtrados
+            txtCurriculums.setText("");
+
+            // Percorrer a lista de eventos e exibir apenas os eventos da pessoa selecionada
+            for (Evento evento : lstEventos) {
+                if (evento.getNomePessoa().equals(pessoaSelecionada)) {
+                    // Adicionar o evento ao txtEventos
+                    txtCurriculums.append(evento.toString() + "\n");
+                }
+            }
+        }
     }//GEN-LAST:event_lstPessoasValueChanged
 
-    private void txtNovoBloco1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNovoBloco1KeyTyped
+    private void txtCurriculumsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCurriculumsKeyTyped
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNovoBloco1KeyTyped
-
-    private void btnVerCurriculumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerCurriculumActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnVerCurriculumActionPerformed
-
-    private void addEventoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventoButtonActionPerformed
-        // TODO add your handling code here:
-        String nomePessoa = nomePessoaField.getText();
-        String descricao = descricaoEventoField.getText();
-        String entidade = entidadeField.getText();
-        if (!nomePessoa.isEmpty() && !descricao.isEmpty() && !entidade.isEmpty()) {
-            // Criar o evento
-            Evento evento = new Evento(nomePessoa, descricao, entidade);
-            lstBuffer.add(evento);
-
-            // Formatar o evento como string e adicionar ao campo de texto para visualização
-            txtEventos.append(evento.toString() + "\n");
-
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.");
-        }
-
-
-    }//GEN-LAST:event_addEventoButtonActionPerformed
+    }//GEN-LAST:event_txtCurriculumsKeyTyped
 
     /**
      * @param args the command line arguments
@@ -603,29 +599,33 @@ public class FormCurriculum extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addEventoButton;
+    private javax.swing.JButton btAcerca2;
+    private javax.swing.JButton btAdicionar;
     private javax.swing.JButton btLoad;
+    private javax.swing.JButton btPessoas;
     private javax.swing.JButton btSave;
+    private javax.swing.JButton btVerProva;
     private javax.swing.JButton btnGerarBloco;
-    private javax.swing.JButton btnVerCurriculum;
     private javax.swing.JTextField descricaoEventoField;
     private javax.swing.JTextField entidadeField;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPAdd;
+    private javax.swing.JPanel jPPessoas;
+    private javax.swing.JPanel jPVerProva;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JTabbedPane jTabbedMerkleTree;
     private javax.swing.JList<String> lstBlockchain;
     private javax.swing.JList<String> lstPessoas;
     private blockchain.GUI.MerkleGraphics merkleGraphics1;
     private javax.swing.JTextField nomePessoaField;
-    private java.awt.Panel panel1;
-    private java.awt.Panel panel2;
-    private java.awt.Panel panel3;
     private javax.swing.JSpinner spNovoBlockDificuldade;
+    private javax.swing.JTextArea txtCurriculums;
     private javax.swing.JTextArea txtEventos;
     private javax.swing.JTextField txtFileName;
-    private javax.swing.JTextArea txtNovoBloco1;
-    private javax.swing.JPanel viewCurrListPanel;
     // End of variables declaration//GEN-END:variables
 }

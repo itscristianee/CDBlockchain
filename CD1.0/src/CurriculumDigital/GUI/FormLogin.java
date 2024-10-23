@@ -22,9 +22,11 @@ public class FormLogin extends javax.swing.JFrame {
      * Creates new form FormLogin
      */
     public FormLogin() throws Exception {
-        
+
         initComponents();
         loadUsersFromFiles();
+        // Centralizar o formulário na tela
+        setLocationRelativeTo(null);
 
     }
 
@@ -216,6 +218,7 @@ public class FormLogin extends javax.swing.JFrame {
             String pub = Base64.getEncoder().encodeToString(u.getPub().getEncoded());
             txtPublicKey.setText(pub);
             new FormCurriculum(u).setVisible(true);
+            this.setVisible(false);
         } catch (Exception ex) {
             Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "User errado");
@@ -247,15 +250,15 @@ public class FormLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_btRegisterActionPerformed
 
     private void lstUsersValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstUsersValueChanged
-       if (!evt.getValueIsAdjusting()) {
-        // Obter o valor selecionado da lista
-        String selectedUser = (String) lstUsers.getSelectedValue();
+        if (!evt.getValueIsAdjusting()) {
+            // Obter o valor selecionado da lista
+            String selectedUser = (String) lstUsers.getSelectedValue();
 
-        // Verificar se há um item selecionado antes de definir o valor no campo de texto
-        if (selectedUser != null) {
-            txtLoginUser.setText(selectedUser);
+            // Verificar se há um item selecionado antes de definir o valor no campo de texto
+            if (selectedUser != null) {
+                txtLoginUser.setText(selectedUser);
+            }
         }
-    }
     }//GEN-LAST:event_lstUsersValueChanged
 
     /**
