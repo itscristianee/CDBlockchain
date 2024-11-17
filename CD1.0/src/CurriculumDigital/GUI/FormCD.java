@@ -8,7 +8,6 @@ import CurriculumDigital.Core.CurriculumDigital;
 import CurriculumDigital.Core.Evento;
 import CurriculumDigital.Core.User;
 import blockchain.utils.Block;
-import blockchain.utils.BlockChain;
 import blockchain.utils.MerkleTree;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +51,6 @@ public class FormCD extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar blockchain: " + e.getMessage());
         }
 
-        atualizarInterface();
-
         lstBuffer = new ArrayList<>();
         lstEventos = new ArrayList<>();
         jPAdd.setVisible(true);
@@ -62,29 +59,48 @@ public class FormCD extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
-    public FormCD(User u) {
-        this();
+    public FormCD(User u) throws Exception {
+        this(); // Chama o construtor padrão
         this.myUser = u;
         this.entidadeField.setText(u.getName()); // Preenche o campo entidade com o nome do utilizador
+
+        // Atualiza a interface com os eventos do utilizador logado
+        atualizarInterface(u.getName());
     }
 
-    private void atualizarInterface() {
+    private void atualizarInterface(String entidade) throws Exception {
+        // Limpa a área de texto antes de exibir os novos eventos
+        txtEventos.setText("");
+
+        // Obtém os eventos relacionados à entidade
+        List<Evento> eventosFiltrados = sistema.getEventosPorEntidade(entidade);
+
+        // Adiciona os eventos ao campo de texto
+        for (Evento evento : eventosFiltrados) {
+            txtEventos.append(evento.toString() + "\n");
+            // Adicionar o nome da pessoa ao modelo da JList (evitar duplicatas)
+            if (!listModel.contains(evento.getNomePessoa())) {
+                listModel.addElement(evento.getNomePessoa());
+            }
+        }
+        // Atualizar a JList de nomes
+        lstPessoas.setModel(listModel);
+        // Atualiza a lista de blocos na interface
+        atualizarBlockchainUI();
+    }
+
+    private void atualizarBlockchainUI() {
         try {
-            // Atualizar lista de eventos
-            txtEventos.setText("");
-            listModel.clear();
-
-            for (Evento evento : sistema.getEventos()) {
-                txtEventos.append(evento.toString() + "\n");
-
-                if (!listModel.contains(evento.getNomePessoa())) {
-                    listModel.addElement(evento.getNomePessoa());
-                }
+            // Atualiza a lista gráfica de blocos
+            DefaultListModel model = new DefaultListModel();
+            for (Block elem : sistema.getBlockchain().getChain()) {
+                model.addElement(elem);
             }
 
-            lstPessoas.setModel(listModel);
+            lstBlockchain.setModel(model);
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar interface: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar lista de blocos: " + e.getMessage());
         }
     }
 
@@ -205,7 +221,7 @@ public class FormCD extends javax.swing.JFrame {
         spNovoBlockDificuldade.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         spNovoBlockDificuldade.setModel(new javax.swing.SpinnerNumberModel(3, 1, 7, 1));
         spNovoBlockDificuldade.setBorder(javax.swing.BorderFactory.createTitledBorder("Dificulty"));
-        jPAdd.add(spNovoBlockDificuldade, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 75, 55));
+        jPAdd.add(spNovoBlockDificuldade, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 80, 70));
 
         addEventoButton.setText("Adicionar Evento(s)");
         addEventoButton.addActionListener(new java.awt.event.ActionListener() {
@@ -213,7 +229,7 @@ public class FormCD extends javax.swing.JFrame {
                 addEventoButtonActionPerformed(evt);
             }
         });
-        jPAdd.add(addEventoButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 220, 151, 55));
+        jPAdd.add(addEventoButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 220, 151, 70));
 
         btnGerarBloco.setText("Gerar Bloco");
         btnGerarBloco.addActionListener(new java.awt.event.ActionListener() {
@@ -371,24 +387,72 @@ public class FormCD extends javax.swing.JFrame {
 
     private void addEventoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventoButtonActionPerformed
         // TODO add your handling code here:
-        String nomePessoa = nomePessoaField.getText().trim();
-        String descricao = descricaoEventoField.getText().trim();
+// Desabilita os botões enquanto a operação está em andamento
+        btnGerarBloco.setEnabled(false);
+        addEventoButton.setEnabled(false);
 
-        if (!nomePessoa.isEmpty() && !descricao.isEmpty()) {
+        new Thread(() -> {
             try {
-                // Criar um evento com a entidade do utilizador logado
+                // Obtém os dados do formulário
+                String nomePessoa = nomePessoaField.getText().trim();
+                String descricao = descricaoEventoField.getText().trim();
+
+                if (nomePessoa.isEmpty() || descricao.isEmpty()) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos."));
+                    return;
+                }
+
+                System.out.println("Criando evento...");
                 Evento evento = new Evento(myUser, nomePessoa, descricao);
 
-                sistema.addEvento(evento); // Adicionar o evento ao sistema
+                // Adiciona o evento ao sistema e salva a blockchain
+                System.out.println("Adicionando evento ao sistema...");
+                sistema.addEvento(evento);
 
-                sistema.save("./blockchain.obj"); // Salvar automaticamente no arquivo blockchain.obj
-                atualizarInterface(); // Atualizar a interface após adicionar o evento
+                System.out.println("Salvando blockchain...");
+                sistema.save("./blockchain.obj");
+
+                // Atualiza a interface no EDT (Event Dispatch Thread)
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        atualizarInterface(entidadeField.getText());
+                        atualizarBlockchainUI();
+
+                        // Adiciona o nome da pessoa à lista, evitando duplicados
+                        if (!listModel.contains(nomePessoa)) {
+                            listModel.addElement(nomePessoa);
+                            lstPessoas.setModel(listModel); // Atualiza a JList
+                        }
+
+                        // Exibe o evento na área de texto
+                        txtEventos.append(evento.toString() + "\n");
+
+                        // Limpa os campos de entrada
+                        nomePessoaField.setText("");
+                        descricaoEventoField.setText("");
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(this, "Erro ao atualizar interface: " + ex.getMessage());
+                    } finally {
+                        // Reabilita os botões após a operação
+                        addEventoButton.setEnabled(true);
+                        btnGerarBloco.setEnabled(true);
+                    }
+                });
+
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Erro ao adicionar evento: " + ex.getMessage());
+                // Mostra o erro na GUI
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "Erro ao adicionar evento: " + ex.getMessage()));
+                ex.printStackTrace();
+            } finally {
+                // Reabilita os botões em caso de erro
+                SwingUtilities.invokeLater(() -> {
+                    addEventoButton.setEnabled(true);
+                    btnGerarBloco.setEnabled(true);
+                });
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.");
-        }
+        }).start();
+
+
     }//GEN-LAST:event_addEventoButtonActionPerformed
 
     private void btnGerarBlocoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarBlocoActionPerformed
@@ -406,10 +470,15 @@ public class FormCD extends javax.swing.JFrame {
 
         new Thread(() -> {
             try {
-                sistema.gerarBloco();
 
                 SwingUtilities.invokeLater(() -> {
-                    atualizarInterface();
+                    try {
+                        sistema.gerarBloco((int) spNovoBlockDificuldade.getValue());
+                        atualizarInterface(entidadeField.getText());
+                        atualizarBlockchainUI(); // Atualiza a lista de blocos
+                    } catch (Exception ex) {
+                        Logger.getLogger(FormCD.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     txtMinado.setText("Novo bloco gerado!");
                     btnGerarBloco.setEnabled(true);
                 });
@@ -444,10 +513,19 @@ public class FormCD extends javax.swing.JFrame {
     private void lstBlockchainValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstBlockchainValueChanged
         // TODO add your handling code here:
         try {
+
             Block b = (Block) lstBlockchain.getSelectedValues()[0];
-            MerkleTree mt = MerkleTree.loadFromFile(b.calculateHash() + ".mkt");
-            //txtNovoBloco.setText(mt.getElementsString());
-            merkleGraphics1.setMerkle(mt);
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    MerkleTree mt = MerkleTree.loadFromFile(b.calculateHash() + ".mkt");
+                    //txtNovoBloco.setText(mt.getElementsString());
+                    merkleGraphics1.setMerkle(mt);
+                } catch (Exception ex) {
+                    Logger.getLogger(FormCD.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            });
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
             Logger.getLogger(FormCD.class.getName()).log(Level.SEVERE, null, ex);

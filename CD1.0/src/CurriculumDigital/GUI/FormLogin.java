@@ -219,7 +219,9 @@ public class FormLogin extends javax.swing.JFrame {
             }
 
             User u = new User(txtLoginUser.getText());
-            u.load(new String(txtLoginPass.getPassword()));
+            // Tente carregar as chaves com a senha fornecida
+        System.out.println("Tentando carregar chaves para o usuário: " + u.getName());
+       u.load(new String(txtLoginPass.getPassword()));
 
             String pub = Base64.getEncoder().encodeToString(u.getPubKey().getEncoded());
             txtPublicKey.setText(pub);

@@ -68,9 +68,9 @@ public class User {
      * @throws Exception Em caso de erro ao carregar ou descriptografar.
      */
     public void load(String password) throws Exception {
-        Path privPath = Paths.get("keys", this.name + ".priv");
-        Path simPath = Paths.get("keys", this.name + ".sim");
-        Path pubPath = Paths.get("keys", this.name + ".pub");
+        Path privPath = Paths.get("keys/", this.name + ".priv");
+        Path simPath = Paths.get("keys/", this.name + ".sim");
+        Path pubPath = Paths.get("keys/", this.name + ".pub");
 
         // Verifica se os ficheiros existem
         if (!Files.exists(privPath) || !Files.exists(simPath) || !Files.exists(pubPath)) {
