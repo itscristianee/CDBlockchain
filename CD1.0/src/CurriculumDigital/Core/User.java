@@ -1,57 +1,37 @@
-//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
-//::                                                                         ::
-//::     Antonio Manuel Rodrigues Manso                                      ::
-//::                                                                         ::
-//::     I N S T I T U T O    P O L I T E C N I C O   D E   T O M A R        ::
-//::     Escola Superior de Tecnologia de Tomar                              ::
-//::     e-mail: manso@ipt.pt                                                ::
-//::     url   : http://orion.ipt.pt/~manso                                  ::
-//::                                                                         ::
-//::     This software was build with the purpose of investigate and         ::
-//::     learning.                                                           ::
-//::                                                                         ::
-//::                                                               (c)2024   ::
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//////////////////////////////////////////////////////////////////////////////
 package CurriculumDigital.Core;
 
 import blockchain.utils.SecurityUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
 /**
- * Created on 09/10/2024, 17:23:45
- *
- * @author manso - computer
+ * Classe que representa um usuário com chaves de segurança.
  */
 public class User {
 
     private String name;
+    private PublicKey pub;   // Chave pública
+    private PrivateKey priv; // Chave privada
+    private Key sim;         // Chave simétrica (AES)
 
-    private PublicKey pub;
-    private PrivateKey priv;
-    private Key sim;
-
+    // Construtores
     public User(String name) {
         this.name = name;
-        this.pub = null;
-        this.priv = null;
-        this.sim = null;
     }
 
-    public User() throws Exception {
+    public User() {
         this.name = "noName";
-        this.pub = null;
-        this.priv = null;
-        this.sim = null;
     }
-    
-    
 
+    /**
+     * Gera as chaves do usuário.
+     * @throws Exception Em caso de erro na geração.
+     */
     public void generateKeys() throws Exception {
         this.sim = SecurityUtils.generateAESKey(256);
         KeyPair kp = SecurityUtils.generateECKeyPair(256);
@@ -59,37 +39,65 @@ public class User {
         this.priv = kp.getPrivate();
     }
 
+    /**
+     * Salva as chaves do usuário em ficheiros.
+     * @param password Senha para proteger as chaves privada e simétrica.
+     * @throws Exception Em caso de erro ao salvar.
+     */
     public void save(String password) throws Exception {
-        //encriptar a chave privada
-        byte[] secret = SecurityUtils.encrypt(priv.getEncoded(), password);
-        Files.write(Path.of(this.name + ".priv"), secret);
-        //encrptar a chave simetrica
-        byte[] simData = SecurityUtils.encrypt(sim.getEncoded(), password);
-        Files.write(Path.of(this.name + ".sim"), simData);
-        //guardar a public
-        Files.write(Path.of(this.name + ".pub"), pub.getEncoded());
+        // Cria o diretório "keys" se não existir
+        Path dir = Paths.get("keys");
+        if (!Files.exists(dir)) {
+            Files.createDirectories(dir);
+        }
+
+        // Caminhos para os ficheiros
+        Path privPath = Paths.get("keys", this.name + ".priv");
+        Path simPath = Paths.get("keys", this.name + ".sim");
+        Path pubPath = Paths.get("keys", this.name + ".pub");
+
+        // Salva as chaves
+        Files.write(privPath, SecurityUtils.encrypt(priv.getEncoded(), password));
+        Files.write(simPath, SecurityUtils.encrypt(sim.getEncoded(), password));
+        Files.write(pubPath, pub.getEncoded());
     }
 
+    /**
+     * Carrega as chaves do usuário de ficheiros.
+     * @param password Senha para descriptografar as chaves.
+     * @throws Exception Em caso de erro ao carregar ou descriptografar.
+     */
     public void load(String password) throws Exception {
-        //desencriptar a privada
-        byte[] privData = Files.readAllBytes(Path.of(this.name + ".priv"));
-        privData = SecurityUtils.decrypt(privData, password);
-        //desencriptar a privada
-        byte[] simData = Files.readAllBytes(Path.of(this.name + ".sim"));
-        simData = SecurityUtils.decrypt(simData, password);
-        //ler a publica
-        byte[] pubData = Files.readAllBytes(Path.of(this.name + ".pub"));
-        this.priv = SecurityUtils.getPrivateKey(privData);
-        this.pub = SecurityUtils.getPublicKey(pubData);
-        this.sim = SecurityUtils.getAESKey(simData);
-    }
-    
-    public void loadPublic() throws Exception{
-         //ler a publica
-        byte[] pubData = Files.readAllBytes(Path.of(this.name + ".pub"));
-        this.pub = SecurityUtils.getPublicKey(pubData);
+        Path privPath = Paths.get("keys", this.name + ".priv");
+        Path simPath = Paths.get("keys", this.name + ".sim");
+        Path pubPath = Paths.get("keys", this.name + ".pub");
+
+        // Verifica se os ficheiros existem
+        if (!Files.exists(privPath) || !Files.exists(simPath) || !Files.exists(pubPath)) {
+            throw new Exception("Os ficheiros de chaves não existem para o usuário: " + this.name);
+        }
+
+        // Carrega e descriptografa as chaves
+        this.priv = SecurityUtils.getPrivateKey(SecurityUtils.decrypt(Files.readAllBytes(privPath), password));
+        this.sim = SecurityUtils.getAESKey(SecurityUtils.decrypt(Files.readAllBytes(simPath), password));
+        this.pub = SecurityUtils.getPublicKey(Files.readAllBytes(pubPath));
     }
 
+    /**
+     * Carrega apenas a chave pública do ficheiro.
+     * @throws Exception Em caso de erro ao carregar.
+     */
+    public void loadPublic() throws Exception {
+        Path pubPath = Paths.get("keys", this.name + ".pub");
+
+        if (!Files.exists(pubPath)) {
+            throw new Exception("O ficheiro da chave pública não existe para o usuário: " + this.name);
+        }
+
+        this.pub = SecurityUtils.getPublicKey(Files.readAllBytes(pubPath));
+    }
+
+    // Getters e Setters
     public String getName() {
         return name;
     }
@@ -98,28 +106,27 @@ public class User {
         this.name = name;
     }
 
-    public PublicKey getPub() {
+    public PublicKey getPubKey() {
         return pub;
     }
 
-    public void setPub(PublicKey pub) {
+    public void setPubKey(PublicKey pub) {
         this.pub = pub;
     }
 
-    public PrivateKey getPriv() {
+    public PrivateKey getPrivKey() {
         return priv;
     }
 
-    public void setPriv(PrivateKey priv) {
+    public void setPrivKey(PrivateKey priv) {
         this.priv = priv;
     }
 
-    public Key getSim() {
+    public Key getSimKey() {
         return sim;
     }
 
-    public void setSim(Key sim) {
+    public void setSimKey(Key sim) {
         this.sim = sim;
     }
-
 }

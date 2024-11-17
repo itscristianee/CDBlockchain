@@ -4,21 +4,17 @@
  */
 package CurriculumDigital.GUI;
 
+import CurriculumDigital.Core.CurriculumDigital;
 import CurriculumDigital.Core.Evento;
 import CurriculumDigital.Core.User;
 import blockchain.utils.Block;
 import blockchain.utils.BlockChain;
 import blockchain.utils.MerkleTree;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -26,38 +22,70 @@ import javax.swing.SwingUtilities;
  *
  * @author cristiane
  */
-public class FormCurriculum extends javax.swing.JFrame {
+public class FormCD extends javax.swing.JFrame {
 
-    BlockChain bloco;
     User myUser = null;
-    MerkleTree mt;
     // Lista de eventos que é mantida durante a execução
     private List<Evento> lstEventos;
     private List<Evento> lstBuffer;
     private DefaultListModel listModel;
-    String nome;
+    private CurriculumDigital sistema;
 
     /**
      * Creates new form NewJFrame
      */
-    public FormCurriculum() {
+    public FormCD() {
         initComponents();
-        bloco = new BlockChain();
-        mt = new MerkleTree();
+
+        // Inicializar o modelo da lista
+        listModel = new DefaultListModel();
+
+        // Associar o listModel à lista de pessoas
+        lstPessoas.setModel(listModel);
+
+        String blockchainFile = "./blockchain.obj";
+        sistema = new CurriculumDigital(blockchainFile);
+
+        try {
+            sistema.load(blockchainFile);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar blockchain: " + e.getMessage());
+        }
+
+        atualizarInterface();
+
         lstBuffer = new ArrayList<>();
         lstEventos = new ArrayList<>();
-        listModel = new DefaultListModel();
         jPAdd.setVisible(true);
         jPVerProva.setVisible(false);
         jPPessoas.setVisible(false);
-        // Centralizar o formulário na tela
         setLocationRelativeTo(null);
     }
 
-    public FormCurriculum(User u) {
+    public FormCD(User u) {
         this();
         this.myUser = u;
-        this.entidadeField.setText(u.getName());
+        this.entidadeField.setText(u.getName()); // Preenche o campo entidade com o nome do utilizador
+    }
+
+    private void atualizarInterface() {
+        try {
+            // Atualizar lista de eventos
+            txtEventos.setText("");
+            listModel.clear();
+
+            for (Evento evento : sistema.getEventos()) {
+                txtEventos.append(evento.toString() + "\n");
+
+                if (!listModel.contains(evento.getNomePessoa())) {
+                    listModel.addElement(evento.getNomePessoa());
+                }
+            }
+
+            lstPessoas.setModel(listModel);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar interface: " + e.getMessage());
+        }
     }
 
     /**
@@ -83,9 +111,6 @@ public class FormCurriculum extends javax.swing.JFrame {
         spNovoBlockDificuldade = new javax.swing.JSpinner();
         addEventoButton = new javax.swing.JButton();
         btnGerarBloco = new javax.swing.JButton();
-        txtFileName = new javax.swing.JTextField();
-        btLoad = new javax.swing.JButton();
-        btSave = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         txtEventos = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
@@ -156,7 +181,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                 nomePessoaFieldActionPerformed(evt);
             }
         });
-        jPAdd.add(nomePessoaField, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, 238, -1));
+        jPAdd.add(nomePessoaField, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 238, -1));
 
         descricaoEventoField.setToolTipText("");
         descricaoEventoField.setBorder(javax.swing.BorderFactory.createTitledBorder("Descrição do Evento"));
@@ -165,7 +190,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                 descricaoEventoFieldActionPerformed(evt);
             }
         });
-        jPAdd.add(descricaoEventoField, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 65, 238, -1));
+        jPAdd.add(descricaoEventoField, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 238, -1));
 
         entidadeField.setEditable(false);
         entidadeField.setToolTipText("");
@@ -175,12 +200,12 @@ public class FormCurriculum extends javax.swing.JFrame {
                 entidadeFieldActionPerformed(evt);
             }
         });
-        jPAdd.add(entidadeField, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 124, 238, -1));
+        jPAdd.add(entidadeField, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 238, -1));
 
         spNovoBlockDificuldade.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         spNovoBlockDificuldade.setModel(new javax.swing.SpinnerNumberModel(3, 1, 7, 1));
         spNovoBlockDificuldade.setBorder(javax.swing.BorderFactory.createTitledBorder("Dificulty"));
-        jPAdd.add(spNovoBlockDificuldade, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 183, 75, 55));
+        jPAdd.add(spNovoBlockDificuldade, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 75, 55));
 
         addEventoButton.setText("Adicionar Evento(s)");
         addEventoButton.addActionListener(new java.awt.event.ActionListener() {
@@ -188,7 +213,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                 addEventoButtonActionPerformed(evt);
             }
         });
-        jPAdd.add(addEventoButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 183, 151, 55));
+        jPAdd.add(addEventoButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 220, 151, 55));
 
         btnGerarBloco.setText("Gerar Bloco");
         btnGerarBloco.addActionListener(new java.awt.event.ActionListener() {
@@ -196,33 +221,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                 btnGerarBlocoActionPerformed(evt);
             }
         });
-        jPAdd.add(btnGerarBloco, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 256, 238, 43));
-
-        txtFileName.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
-        txtFileName.setText("./blockchain.obj");
-        txtFileName.setBorder(javax.swing.BorderFactory.createTitledBorder("File Name"));
-        txtFileName.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtFileNameKeyTyped(evt);
-            }
-        });
-        jPAdd.add(txtFileName, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 317, 238, -1));
-
-        btLoad.setText("Load");
-        btLoad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLoadActionPerformed(evt);
-            }
-        });
-        jPAdd.add(btLoad, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 376, 111, 51));
-
-        btSave.setText("Save");
-        btSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btSaveActionPerformed(evt);
-            }
-        });
-        jPAdd.add(btSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(135, 376, 111, 51));
+        jPAdd.add(btnGerarBloco, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 238, 43));
 
         txtEventos.setEditable(false);
         txtEventos.setColumns(20);
@@ -244,7 +243,7 @@ public class FormCurriculum extends javax.swing.JFrame {
         jPAdd.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 0, 330, -1));
 
         txtMinado.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jPAdd.add(txtMinado, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 440, 140, 20));
+        jPAdd.add(txtMinado, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 390, 230, 30));
 
         jPVerProva.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -372,26 +371,21 @@ public class FormCurriculum extends javax.swing.JFrame {
 
     private void addEventoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventoButtonActionPerformed
         // TODO add your handling code here:
-        String nomePessoa = nomePessoaField.getText();
-        String descricao = descricaoEventoField.getText();
-        String entidade = entidadeField.getText();
-        if (!nomePessoa.isEmpty() && !descricao.isEmpty() ) {
-            // Criar o evento
-            Evento evento = new Evento(nomePessoa, descricao, entidade);
+        String nomePessoa = nomePessoaField.getText().trim();
+        String descricao = descricaoEventoField.getText().trim();
 
-            // Adicionar o nome da pessoa ao DefaultListModel existente
-            if (!listModel.contains(nomePessoa)) {
-                listModel.addElement(nomePessoa);
-                lstPessoas.setModel(listModel);  // Associar o modelo à JList
+        if (!nomePessoa.isEmpty() && !descricao.isEmpty()) {
+            try {
+                // Criar um evento com a entidade do utilizador logado
+                Evento evento = new Evento(myUser, nomePessoa, descricao);
+
+                sistema.addEvento(evento); // Adicionar o evento ao sistema
+
+                sistema.save("./blockchain.obj"); // Salvar automaticamente no arquivo blockchain.obj
+                atualizarInterface(); // Atualizar a interface após adicionar o evento
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao adicionar evento: " + ex.getMessage());
             }
-            lstBuffer.add(evento);
-            lstEventos.add(evento);
-            // Formatar o evento como string e adicionar ao campo de texto para visualização
-            txtEventos.append(evento.toString() + "\n");
-            // Limpar os campos de texto
-            nomePessoaField.setText("");
-            descricaoEventoField.setText("");
-
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.");
         }
@@ -412,130 +406,21 @@ public class FormCurriculum extends javax.swing.JFrame {
 
         new Thread(() -> {
             try {
+                sistema.gerarBloco();
 
-                // Cria a Merkle Tree para os elementos adicionados
-                mt = new MerkleTree(lstBuffer);
-
-                merkleGraphics1.setMerkle(mt);
-
-                bloco.add(mt.getRoot(), (int) spNovoBlockDificuldade.getValue());
-
-                // Salva a Merkle Tree em um arquivo (mantém esta funcionalidade)
-                mt.saveToFile(bloco.getLastBlockHash() + ".mkt");
-
-                // Atualiza a lista gráfica de blocos
-                DefaultListModel model = new DefaultListModel();
-                for (Block elem : bloco.getChain()) {
-                    model.addElement(elem);
-                }
-
-                lstBlockchain.setModel(model);
-                txtMinado.setText("Novo bloco gerado!");
-
-                // Usa um Timer para limpar o texto após 30 segundos
-                javax.swing.Timer timer = new javax.swing.Timer(10000, e -> txtMinado.setText(""));
-                timer.setRepeats(false); // Configura para executar apenas uma vez
-                timer.start();
-
-                //update iterface using EDT thread
                 SwingUtilities.invokeLater(() -> {
-                    //enable button
+                    atualizarInterface();
+                    txtMinado.setText("Novo bloco gerado!");
                     btnGerarBloco.setEnabled(true);
                 });
 
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao gerar bloco: " + ex.getMessage());
             }
         }).start();
 
 
     }//GEN-LAST:event_btnGerarBlocoActionPerformed
-
-    private void txtFileNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFileNameKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFileNameKeyTyped
-
-    private void btLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoadActionPerformed
-        // Selecionar arquivo através do JFileChooser
-        JFileChooser fc = new JFileChooser(new File(txtFileName.getText()));
-        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                // Carregar a blockchain a partir do arquivo selecionado
-                bloco.load(fc.getSelectedFile().getAbsolutePath());
-
-                txtFileName.setText(fc.getSelectedFile().getAbsolutePath());
-
-                // Limpar o campo de texto `txtEventos` para garantir que ele esteja vazio antes de listar os eventos
-                txtEventos.setText("");
-
-                // Atualizar a lista gráfica de blocos
-                DefaultListModel model = new DefaultListModel();
-
-                lstEventos.clear();
-                Set<String> eventosAdicionados = new HashSet<>();
-
-                for (Block b : bloco.getChain()) {
-                    // Adicionar o bloco ao modelo da lista gráfica
-                    model.addElement(b);
-                    // Carregar a Merkle Tree a partir do arquivo associado ao bloco
-                    MerkleTree mt = MerkleTree.loadFromFile(b.calculateHash() + ".mkt");
-
-                    // Adicionar cada evento individualmente ao campo txtEventos e extrair os nomes
-                    for (Object obj : mt.getElements()) {
-                        String eventoStr = (String) obj;  // Tratar o evento como String
-                        String[] partes = eventoStr.split(" \\| ");
-                        if (partes.length == 3) {
-                            String nomePessoa = partes[0].trim();
-                            String descricao = partes[1].trim();
-                            String entidade = partes[2].trim();
-
-                            // Criar um novo objeto Evento
-                            Evento evento = new Evento(nomePessoa, descricao, entidade);
-                            lstEventos.add(evento);
-                            // Verificar se o evento já foi adicionado ao txtEventos
-                            if (!eventosAdicionados.contains(evento.toString())) {
-                                // Adicionar ao campo txtEventos
-                                txtEventos.append(evento.toString() + "\n");
-
-                                // Marcar o evento como adicionado
-                                eventosAdicionados.add(evento.toString());
-
-                                // Adicionar o nome da pessoa ao modelo da JList (evitar duplicatas)
-                                if (!listModel.contains(evento.getNomePessoa())) {
-                                    listModel.addElement(evento.getNomePessoa());
-                                }
-                            }
-                        }
-                    }
-
-                }
-                // Atualizar o modelo da lista gráfica da blockchain
-                lstBlockchain.setModel(model);
-                // Atualizar a JList de nomes
-                lstPessoas.setModel(listModel);  // Associa o modelo de nomes à JList de pessoas
-
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_btLoadActionPerformed
-
-    private void btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveActionPerformed
-        // TODO add your handling code here:
-        JFileChooser fc = new JFileChooser(new File("."));
-
-        if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                bloco.save(fc.getSelectedFile().getAbsolutePath());
-                txtFileName.setText(fc.getSelectedFile().getAbsolutePath());
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_btSaveActionPerformed
 
     private void txtEventosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEventosKeyTyped
         // TODO add your handling code here:
@@ -565,7 +450,7 @@ public class FormCurriculum extends javax.swing.JFrame {
             merkleGraphics1.setMerkle(mt);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormCD.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_lstBlockchainValueChanged
 
@@ -575,15 +460,16 @@ public class FormCurriculum extends javax.swing.JFrame {
         String pessoaSelecionada = lstPessoas.getSelectedValue();
 
         if (pessoaSelecionada != null) {
-            // Limpar o campo de eventos antes de exibir os eventos filtrados
             txtCurriculums.setText("");
 
-            // Percorrer a lista de eventos e exibir apenas os eventos da pessoa selecionada
-            for (Evento evento : lstEventos) {
-                if (evento.getNomePessoa().equals(pessoaSelecionada)) {
-                    // Adicionar o evento ao txtEventos
-                    txtCurriculums.append(evento.toString() + "\n");
+            try {
+                for (Evento evento : sistema.getEventos()) {
+                    if (evento.getNomePessoa().equals(pessoaSelecionada)) {
+                        txtCurriculums.append(evento.toString() + "\n");
+                    }
                 }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao exibir currículos: " + ex.getMessage());
             }
         }
     }//GEN-LAST:event_lstPessoasValueChanged
@@ -609,21 +495,23 @@ public class FormCurriculum extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormCurriculum().setVisible(true);
+                new FormCD().setVisible(true);
             }
         });
     }
@@ -632,9 +520,7 @@ public class FormCurriculum extends javax.swing.JFrame {
     private javax.swing.JButton addEventoButton;
     private javax.swing.JButton btAcerca2;
     private javax.swing.JButton btAdicionar;
-    private javax.swing.JButton btLoad;
     private javax.swing.JButton btPessoas;
-    private javax.swing.JButton btSave;
     private javax.swing.JButton btVerProva;
     private javax.swing.JButton btnGerarBloco;
     private javax.swing.JTextField descricaoEventoField;
@@ -657,7 +543,6 @@ public class FormCurriculum extends javax.swing.JFrame {
     private javax.swing.JSpinner spNovoBlockDificuldade;
     private javax.swing.JTextArea txtCurriculums;
     private javax.swing.JTextArea txtEventos;
-    private javax.swing.JTextField txtFileName;
     private javax.swing.JLabel txtMinado;
     // End of variables declaration//GEN-END:variables
 }

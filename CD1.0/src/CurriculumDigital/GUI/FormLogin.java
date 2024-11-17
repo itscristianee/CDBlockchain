@@ -221,9 +221,9 @@ public class FormLogin extends javax.swing.JFrame {
             User u = new User(txtLoginUser.getText());
             u.load(new String(txtLoginPass.getPassword()));
 
-            String pub = Base64.getEncoder().encodeToString(u.getPub().getEncoded());
+            String pub = Base64.getEncoder().encodeToString(u.getPubKey().getEncoded());
             txtPublicKey.setText(pub);
-            new FormCurriculum(u).setVisible(true);
+            new FormCD(u).setVisible(true);
             this.setVisible(false);
         } catch (Exception ex) {
             Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
@@ -233,6 +233,8 @@ public class FormLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_btLoginActionPerformed
 
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
+        
+        
         try {
 
             // Verifica se o campo de login ou senha está vazio
@@ -316,7 +318,7 @@ public class FormLogin extends javax.swing.JFrame {
     private void loadUsersFromFiles() {
         try {
             // Defina o caminho correto onde os arquivos de usuários estão sendo salvos
-            File dir = new File("/Users/cristiane/NetBeansProjects/CurriculumDigitalBlockchain/CD1.0/");
+            File dir = new File("/Users/cristiane/NetBeansProjects/CurriculumDigitalBlockchain/CD1.0/keys/");
 
             // Cria um novo modelo para a JList
             DefaultListModel<String> userListModel = new DefaultListModel<>();
