@@ -30,6 +30,16 @@ public class FormLogin extends javax.swing.JFrame {
 
     }
 
+    public FormLogin(User u) throws Exception {
+
+        initComponents();
+        loadUsersFromFiles();
+        // Centralizar o formulário na tela
+        setLocationRelativeTo(null);
+        txtLoginUser.setText(u.getName());
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -220,12 +230,12 @@ public class FormLogin extends javax.swing.JFrame {
 
             User u = new User(txtLoginUser.getText());
             // Tente carregar as chaves com a senha fornecida
-        System.out.println("Tentando carregar chaves para o usuário: " + u.getName());
-       u.load(new String(txtLoginPass.getPassword()));
+            System.out.println("Tentando carregar chaves para o usuário: " + u.getName());
+            u.load(new String(txtLoginPass.getPassword()));
 
             String pub = Base64.getEncoder().encodeToString(u.getPubKey().getEncoded());
             txtPublicKey.setText(pub);
-            new FormCD(u).setVisible(true);
+            new FormCurriculumDigital(u).setVisible(true);
             this.setVisible(false);
         } catch (Exception ex) {
             Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
@@ -235,8 +245,7 @@ public class FormLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_btLoginActionPerformed
 
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
-        
-        
+
         try {
 
             // Verifica se o campo de login ou senha está vazio
@@ -320,7 +329,7 @@ public class FormLogin extends javax.swing.JFrame {
     private void loadUsersFromFiles() {
         try {
             // Defina o caminho correto onde os arquivos de usuários estão sendo salvos
-            File dir = new File("/Users/cristiane/NetBeansProjects/CurriculumDigitalBlockchain/CD1.0/keys/");
+            File dir = new File("/Users/cristiane/NetBeansProjects/CurriculumDigitalBlockchain/CD2.0/keys/");
 
             // Cria um novo modelo para a JList
             DefaultListModel<String> userListModel = new DefaultListModel<>();

@@ -26,10 +26,10 @@ import javax.swing.SwingUtilities;
  *
  * @author cristiane
  */
-public class FormCurriculum extends javax.swing.JFrame {
+public class FormAntigo extends javax.swing.JFrame {
 
     BlockChain bloco;
-    User myUser = null;
+    User myUser;
     MerkleTree mt;
     // Lista de eventos que é mantida durante a execução
     private List<Evento> lstEventos;
@@ -40,7 +40,7 @@ public class FormCurriculum extends javax.swing.JFrame {
     /**
      * Creates new form NewJFrame
      */
-    public FormCurriculum() {
+    public FormAntigo() {
         initComponents();
         bloco = new BlockChain();
         mt = new MerkleTree();
@@ -54,7 +54,7 @@ public class FormCurriculum extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
-    public FormCurriculum(User u) {
+    public FormAntigo(User u) {
         this();
         this.myUser = u;
         this.entidadeField.setText(u.getName());
@@ -74,8 +74,9 @@ public class FormCurriculum extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         btAdicionar = new javax.swing.JButton();
         btPessoas = new javax.swing.JButton();
-        btAcerca2 = new javax.swing.JButton();
+        btLogout = new javax.swing.JButton();
         btVerProva = new javax.swing.JButton();
+        btAcerca = new javax.swing.JButton();
         jPAdd = new javax.swing.JPanel();
         nomePessoaField = new javax.swing.JTextField();
         descricaoEventoField = new javax.swing.JTextField();
@@ -120,7 +121,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                 btAdicionarjButton1ActionPerformed(evt);
             }
         });
-        jPanel5.add(btAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 78, 140, 58));
+        jPanel5.add(btAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 78, 140, 50));
 
         btPessoas.setText("Pessoas");
         btPessoas.addActionListener(new java.awt.event.ActionListener() {
@@ -128,15 +129,15 @@ public class FormCurriculum extends javax.swing.JFrame {
                 btPessoasActionPerformed(evt);
             }
         });
-        jPanel5.add(btPessoas, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 170, 140, 58));
+        jPanel5.add(btPessoas, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 170, 140, 40));
 
-        btAcerca2.setText("Acerca");
-        btAcerca2.addActionListener(new java.awt.event.ActionListener() {
+        btLogout.setText("LogOut");
+        btLogout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btAcerca2btAcercaActionPerformed(evt);
+                btLogoutbtAcercaActionPerformed(evt);
             }
         });
-        jPanel5.add(btAcerca2, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 352, 140, 58));
+        jPanel5.add(btLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, 140, 40));
 
         btVerProva.setText("Ver Prova");
         btVerProva.addActionListener(new java.awt.event.ActionListener() {
@@ -144,7 +145,15 @@ public class FormCurriculum extends javax.swing.JFrame {
                 btVerProvaActionPerformed(evt);
             }
         });
-        jPanel5.add(btVerProva, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 260, 140, 58));
+        jPanel5.add(btVerProva, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 140, 40));
+
+        btAcerca.setText("Acerca");
+        btAcerca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAcercabtAcercaActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btAcerca, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 140, 40));
 
         jPAdd.setBackground(new java.awt.Color(255, 255, 255));
         jPAdd.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -261,14 +270,14 @@ public class FormCurriculum extends javax.swing.JFrame {
         merkleGraphics1.setLayout(merkleGraphics1Layout);
         merkleGraphics1Layout.setHorizontalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 370, Short.MAX_VALUE)
+            .addGap(0, 390, Short.MAX_VALUE)
         );
         merkleGraphics1Layout.setVerticalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 390, Short.MAX_VALUE)
         );
 
-        jPVerProva.add(merkleGraphics1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, 370, 390));
+        jPVerProva.add(merkleGraphics1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 10, 390, 390));
 
         jPPessoas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -348,15 +357,16 @@ public class FormCurriculum extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btAdicionarjButton1ActionPerformed
 
-    private void btAcerca2btAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAcerca2btAcercaActionPerformed
-        // TODO add your handling code here:
-        // TODO add your handling code here:
-        // Mostra uma janela de diálogo com as informações dos membros do grupo
-        JOptionPane.showMessageDialog(this,
-                "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n Joao Campos - 25269 ",
-                "Acerca de...",
-                JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_btAcerca2btAcercaActionPerformed
+    private void btLogoutbtAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLogoutbtAcercaActionPerformed
+        try {
+            // TODO add your handling code here:
+            // TODO add your handling code here:
+            new FormLogin(myUser).setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.setVisible(false);
+    }//GEN-LAST:event_btLogoutbtAcercaActionPerformed
 
     private void nomePessoaFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomePessoaFieldActionPerformed
         // TODO add your handling code here:
@@ -375,7 +385,7 @@ public class FormCurriculum extends javax.swing.JFrame {
         String nomePessoa = nomePessoaField.getText();
         String descricao = descricaoEventoField.getText();
         String entidade = entidadeField.getText();
-        if (!nomePessoa.isEmpty() && !descricao.isEmpty() ) {
+        if (!nomePessoa.isEmpty() && !descricao.isEmpty()) {
             // Criar o evento
             Evento evento = new Evento(nomePessoa, descricao, entidade);
 
@@ -445,7 +455,7 @@ public class FormCurriculum extends javax.swing.JFrame {
 
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }).start();
 
@@ -517,7 +527,7 @@ public class FormCurriculum extends javax.swing.JFrame {
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_btLoadActionPerformed
@@ -532,7 +542,7 @@ public class FormCurriculum extends javax.swing.JFrame {
                 txtFileName.setText(fc.getSelectedFile().getAbsolutePath());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
-                Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_btSaveActionPerformed
@@ -565,7 +575,7 @@ public class FormCurriculum extends javax.swing.JFrame {
             merkleGraphics1.setMerkle(mt);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(FormCurriculum.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_lstBlockchainValueChanged
 
@@ -592,6 +602,15 @@ public class FormCurriculum extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCurriculumsKeyTyped
 
+    private void btAcercabtAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAcercabtAcercaActionPerformed
+        // TODO add your handling code here:
+        // Mostra uma janela de diálogo com as informações dos membros do grupo
+        JOptionPane.showMessageDialog(this,
+                "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n Joao Campos - 25269 ",
+                "Acerca de...",
+                JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btAcercabtAcercaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -609,30 +628,33 @@ public class FormCurriculum extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculum.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormCurriculum().setVisible(true);
+                new FormAntigo().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addEventoButton;
-    private javax.swing.JButton btAcerca2;
+    private javax.swing.JButton btAcerca;
     private javax.swing.JButton btAdicionar;
     private javax.swing.JButton btLoad;
+    private javax.swing.JButton btLogout;
     private javax.swing.JButton btPessoas;
     private javax.swing.JButton btSave;
     private javax.swing.JButton btVerProva;

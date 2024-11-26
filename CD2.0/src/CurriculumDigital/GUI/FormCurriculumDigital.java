@@ -21,9 +21,9 @@ import javax.swing.SwingUtilities;
  *
  * @author cristiane
  */
-public class FormCD extends javax.swing.JFrame {
+public class FormCurriculumDigital extends javax.swing.JFrame {
 
-    User myUser = null;
+    User myUser;
     // Lista de eventos que é mantida durante a execução
     private List<Evento> lstEventos;
     private List<Evento> lstBuffer;
@@ -33,7 +33,7 @@ public class FormCD extends javax.swing.JFrame {
     /**
      * Creates new form NewJFrame
      */
-    public FormCD() {
+    public FormCurriculumDigital() {
         initComponents();
 
         // Inicializar o modelo da lista
@@ -59,7 +59,7 @@ public class FormCD extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
-    public FormCD(User u) throws Exception {
+    public FormCurriculumDigital(User u) throws Exception {
         this(); // Chama o construtor padrão
         this.myUser = u;
         this.entidadeField.setText(u.getName()); // Preenche o campo entidade com o nome do utilizador
@@ -120,6 +120,7 @@ public class FormCD extends javax.swing.JFrame {
         btPessoas = new javax.swing.JButton();
         btAcerca2 = new javax.swing.JButton();
         btVerProva = new javax.swing.JButton();
+        btLogout1 = new javax.swing.JButton();
         jPAdd = new javax.swing.JPanel();
         nomePessoaField = new javax.swing.JTextField();
         descricaoEventoField = new javax.swing.JTextField();
@@ -148,12 +149,10 @@ public class FormCD extends javax.swing.JFrame {
         jPanel1.setLayout(new java.awt.CardLayout());
 
         jPanel5.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.hoverBorderColor"));
-        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel3.setFont(new java.awt.Font("Trattatello", 1, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Curriculum Digital");
-        jPanel5.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 23, 165, 37));
 
         btAdicionar.setText("Adicionar");
         btAdicionar.addActionListener(new java.awt.event.ActionListener() {
@@ -161,7 +160,6 @@ public class FormCD extends javax.swing.JFrame {
                 btAdicionarjButton1ActionPerformed(evt);
             }
         });
-        jPanel5.add(btAdicionar, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 78, 140, 58));
 
         btPessoas.setText("Pessoas");
         btPessoas.addActionListener(new java.awt.event.ActionListener() {
@@ -169,7 +167,6 @@ public class FormCD extends javax.swing.JFrame {
                 btPessoasActionPerformed(evt);
             }
         });
-        jPanel5.add(btPessoas, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 170, 140, 58));
 
         btAcerca2.setText("Acerca");
         btAcerca2.addActionListener(new java.awt.event.ActionListener() {
@@ -177,7 +174,6 @@ public class FormCD extends javax.swing.JFrame {
                 btAcerca2btAcercaActionPerformed(evt);
             }
         });
-        jPanel5.add(btAcerca2, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 352, 140, 58));
 
         btVerProva.setText("Ver Prova");
         btVerProva.addActionListener(new java.awt.event.ActionListener() {
@@ -185,7 +181,53 @@ public class FormCD extends javax.swing.JFrame {
                 btVerProvaActionPerformed(evt);
             }
         });
-        jPanel5.add(btVerProva, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 260, 140, 58));
+
+        btLogout1.setText("LogOut");
+        btLogout1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLogout1btAcercaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(btAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(btPessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(btVerProva, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btLogout1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btAcerca2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(btPessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(btVerProva, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(btAcerca2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(btLogout1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
         jPAdd.setBackground(new java.awt.Color(255, 255, 255));
         jPAdd.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -276,14 +318,14 @@ public class FormCD extends javax.swing.JFrame {
         merkleGraphics1.setLayout(merkleGraphics1Layout);
         merkleGraphics1Layout.setHorizontalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 370, Short.MAX_VALUE)
+            .addGap(0, 380, Short.MAX_VALUE)
         );
         merkleGraphics1Layout.setVerticalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 390, Short.MAX_VALUE)
         );
 
-        jPVerProva.add(merkleGraphics1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, 370, 390));
+        jPVerProva.add(merkleGraphics1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, 380, 390));
 
         jPPessoas.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -354,24 +396,6 @@ public class FormCD extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btAdicionarjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAdicionarjButton1ActionPerformed
-        // TODO add your handling code here:
-        jPAdd.setVisible(true);
-        jPPessoas.setVisible(false);
-        jPVerProva.setVisible(false);
-
-    }//GEN-LAST:event_btAdicionarjButton1ActionPerformed
-
-    private void btAcerca2btAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAcerca2btAcercaActionPerformed
-        // TODO add your handling code here:
-        // TODO add your handling code here:
-        // Mostra uma janela de diálogo com as informações dos membros do grupo
-        JOptionPane.showMessageDialog(this,
-                "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n Joao Campos - 25269 ",
-                "Acerca de...",
-                JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_btAcerca2btAcercaActionPerformed
 
     private void nomePessoaFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomePessoaFieldActionPerformed
         // TODO add your handling code here:
@@ -477,7 +501,7 @@ public class FormCD extends javax.swing.JFrame {
                         atualizarInterface(entidadeField.getText());
                         atualizarBlockchainUI(); // Atualiza a lista de blocos
                     } catch (Exception ex) {
-                        Logger.getLogger(FormCD.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(FormCurriculumDigital.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     txtMinado.setText("Novo bloco gerado!");
                     btnGerarBloco.setEnabled(true);
@@ -495,21 +519,6 @@ public class FormCD extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtEventosKeyTyped
 
-    private void btPessoasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPessoasActionPerformed
-        // TODO add your handling code here:
-        jPPessoas.setVisible(true);
-        jPVerProva.setVisible(false);
-        jPAdd.setVisible(false);
-    }//GEN-LAST:event_btPessoasActionPerformed
-
-    private void btVerProvaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btVerProvaActionPerformed
-        // TODO add your handling code here:
-
-        jPVerProva.setVisible(true);
-        jPPessoas.setVisible(false);
-        jPAdd.setVisible(false);
-    }//GEN-LAST:event_btVerProvaActionPerformed
-
     private void lstBlockchainValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstBlockchainValueChanged
         // TODO add your handling code here:
         try {
@@ -521,14 +530,14 @@ public class FormCD extends javax.swing.JFrame {
                     //txtNovoBloco.setText(mt.getElementsString());
                     merkleGraphics1.setMerkle(mt);
                 } catch (Exception ex) {
-                    Logger.getLogger(FormCD.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FormCurriculumDigital.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             });
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(FormCD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormCurriculumDigital.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_lstBlockchainValueChanged
 
@@ -556,6 +565,49 @@ public class FormCD extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCurriculumsKeyTyped
 
+    private void btVerProvaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btVerProvaActionPerformed
+        // TODO add your handling code here:
+
+        jPVerProva.setVisible(true);
+        jPPessoas.setVisible(false);
+        jPAdd.setVisible(false);
+    }//GEN-LAST:event_btVerProvaActionPerformed
+
+    private void btAcerca2btAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAcerca2btAcercaActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        // Mostra uma janela de diálogo com as informações dos membros do grupo
+        JOptionPane.showMessageDialog(this,
+            "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n Joao Campos - 25269 ",
+            "Acerca de...",
+            JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btAcerca2btAcercaActionPerformed
+
+    private void btPessoasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPessoasActionPerformed
+        // TODO add your handling code here:
+        jPPessoas.setVisible(true);
+        jPVerProva.setVisible(false);
+        jPAdd.setVisible(false);
+    }//GEN-LAST:event_btPessoasActionPerformed
+
+    private void btAdicionarjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAdicionarjButton1ActionPerformed
+        // TODO add your handling code here:
+        jPAdd.setVisible(true);
+        jPPessoas.setVisible(false);
+        jPVerProva.setVisible(false);
+    }//GEN-LAST:event_btAdicionarjButton1ActionPerformed
+
+    private void btLogout1btAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLogout1btAcercaActionPerformed
+        try {
+            // TODO add your handling code here:
+            // TODO add your handling code here:
+            new FormLogin(myUser).setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.setVisible(false);
+    }//GEN-LAST:event_btLogout1btAcercaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -573,14 +625,18 @@ public class FormCD extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormCD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculumDigital.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormCD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculumDigital.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormCD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculumDigital.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormCD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculumDigital.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -589,7 +645,7 @@ public class FormCD extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormCD().setVisible(true);
+                new FormCurriculumDigital().setVisible(true);
             }
         });
     }
@@ -598,6 +654,7 @@ public class FormCD extends javax.swing.JFrame {
     private javax.swing.JButton addEventoButton;
     private javax.swing.JButton btAcerca2;
     private javax.swing.JButton btAdicionar;
+    private javax.swing.JButton btLogout1;
     private javax.swing.JButton btPessoas;
     private javax.swing.JButton btVerProva;
     private javax.swing.JButton btnGerarBloco;
