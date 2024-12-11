@@ -51,6 +51,8 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar blockchain: " + e.getMessage());
         }
 
+        // Inicializar a barra de pesquisa
+        inicializarPesquisa();
         lstBuffer = new ArrayList<>();
         lstEventos = new ArrayList<>();
         jPAdd.setVisible(true);
@@ -104,6 +106,41 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         }
     }
 
+    private void inicializarPesquisa() {
+        barraPesquisa.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                filtrarLista();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                filtrarLista();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                filtrarLista();
+            }
+        });
+    }
+
+    private void filtrarLista() {
+        String textoPesquisa = barraPesquisa.getText().toLowerCase();
+        DefaultListModel<String> modeloFiltrado = new DefaultListModel<>();
+
+        // Filtrar os itens com base no texto
+        for (int i = 0; i < listModel.getSize(); i++) {
+            String item = (String) listModel.getElementAt(i); // Converte explicitamente para String
+            if (item.toLowerCase().contains(textoPesquisa)) {
+                modeloFiltrado.addElement(item);
+            }
+        }
+
+        // Atualizar a JList com o modelo filtrado
+        lstPessoas.setModel(modeloFiltrado);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -141,6 +178,8 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         lstPessoas = new javax.swing.JList<>();
         jScrollPane7 = new javax.swing.JScrollPane();
         txtCurriculums = new javax.swing.JTextArea();
+        barraPesquisa = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -336,7 +375,7 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(lstPessoas);
 
-        jPPessoas.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 190, 370));
+        jPPessoas.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 180, 390));
 
         txtCurriculums.setEditable(false);
         txtCurriculums.setColumns(20);
@@ -350,7 +389,11 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         });
         jScrollPane7.setViewportView(txtCurriculums);
 
-        jPPessoas.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(212, 10, 360, 240));
+        jPPessoas.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(212, 60, 360, 390));
+        jPPessoas.add(barraPesquisa, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, 360, 30));
+
+        jLabel2.setText("Pesquisa por nome:");
+        jPPessoas.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 160, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -578,9 +621,9 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         // TODO add your handling code here:
         // Mostra uma janela de diálogo com as informações dos membros do grupo
         JOptionPane.showMessageDialog(this,
-            "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n Joao Campos - 25269 ",
-            "Acerca de...",
-            JOptionPane.INFORMATION_MESSAGE);
+                "Trabalho desenvolvido por:\n Cristiane Mayabanza - 24639  \n Joao Campos - 25269 ",
+                "Acerca de...",
+                JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btAcerca2btAcercaActionPerformed
 
     private void btPessoasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPessoasActionPerformed
@@ -652,6 +695,7 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addEventoButton;
+    private javax.swing.JTextField barraPesquisa;
     private javax.swing.JButton btAcerca2;
     private javax.swing.JButton btAdicionar;
     private javax.swing.JButton btLogout1;
@@ -661,6 +705,7 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
     private javax.swing.JTextField descricaoEventoField;
     private javax.swing.JTextField entidadeField;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPAdd;
     private javax.swing.JPanel jPPessoas;
