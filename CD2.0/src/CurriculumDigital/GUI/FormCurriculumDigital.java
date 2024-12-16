@@ -477,6 +477,7 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
                 sistema.addEvento(evento);
 
                 System.out.println("Salvando blockchain...");
+
                 sistema.save("./blockchain.obj");
 
                 // Atualiza a interface no EDT (Event Dispatch Thread)
@@ -537,10 +538,10 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
 
         new Thread(() -> {
             try {
+                sistema.gerarBloco((int) spNovoBlockDificuldade.getValue());
 
                 SwingUtilities.invokeLater(() -> {
                     try {
-                        sistema.gerarBloco((int) spNovoBlockDificuldade.getValue());
                         atualizarInterface(entidadeField.getText());
                         atualizarBlockchainUI(); // Atualiza a lista de blocos
                     } catch (Exception ex) {

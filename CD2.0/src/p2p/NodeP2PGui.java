@@ -15,6 +15,8 @@
 //////////////////////////////////////////////////////////////////////////////
 package p2p;
 
+import CurriculumDigital.Core.User;
+import CurriculumDigital.GUI.FormCurriculumDigital;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -27,6 +29,9 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import blockchain.utils.GuiUtils;
 import blockchain.utils.RMI;
+import java.io.File;
+import java.util.Base64;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -73,6 +78,22 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
         txtLstTransdactions = new javax.swing.JTextArea();
         txtTranaction = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        txtPublicKey = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtLoginUser = new javax.swing.JTextField();
+        txtLoginPass = new javax.swing.JPasswordField();
+        btLogin = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        lstUsers = new javax.swing.JList<>();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        txtRegisterUser = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtRegisterPass = new javax.swing.JPasswordField();
+        btRegister = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -216,6 +237,132 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
 
         jTabbedPane1.addTab("Transaction", jPanel4);
 
+        txtPublicKey.setEditable(false);
+        txtPublicKey.setColumns(20);
+        txtPublicKey.setRows(5);
+        jScrollPane4.setViewportView(txtPublicKey);
+
+        jLabel1.setText("Username");
+
+        jLabel2.setText("password");
+
+        txtLoginUser.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+
+        txtLoginPass.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+
+        btLogin.setText("Login");
+        btLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLoginActionPerformed(evt);
+            }
+        });
+
+        jScrollPane5.setBorder(javax.swing.BorderFactory.createTitledBorder("Users"));
+
+        lstUsers.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
+        lstUsers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        lstUsers.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lstUsersValueChanged(evt);
+            }
+        });
+        jScrollPane5.setViewportView(lstUsers);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(txtLoginUser, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(txtLoginPass, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(68, 68, 68)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLoginUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLoginPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
+                .addComponent(btLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(67, 67, 67))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Login", jPanel5);
+
+        jLabel3.setText("Username");
+
+        txtRegisterUser.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+
+        jLabel4.setText("password");
+
+        txtRegisterPass.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+
+        btRegister.setText("Registar");
+        btRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btRegisterActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(92, 92, 92)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtRegisterPass))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtRegisterUser, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(114, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtRegisterUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtRegisterPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
+                .addComponent(btRegister)
+                .addContainerGap(160, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Registar", jPanel6);
+
         getContentPane().add(jTabbedPane1, java.awt.BorderLayout.PAGE_START);
 
         pack();
@@ -226,7 +373,7 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
             int port = Integer.parseInt(txtServerListeningPort.getText());
             String name = txtServerListeningObjectName.getText();
             //local adress of server
-            String host = "192.168.1.230"; //InetAddress.getByName("localhost").getHostAddress();  //.InetAddress.getLocalHost().getHostAddress();
+            String host = " 192.168.1.129"; //InetAddress.getByName("localhost").getHostAddress();  //.InetAddress.getLocalHost().getHostAddress();
             //create registry to object
             LocateRegistry.createRegistry(port);
             //create adress of remote object
@@ -258,6 +405,7 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
             if (address.endsWith("listening")) {
                 address = address.replace("listening", "").trim();
             }
+
             System.out.println(address);
             IremoteP2P node = (IremoteP2P) RMI.getRemote(address);
             myremoteObject.addNode(node);
@@ -275,6 +423,71 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
             Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed
+
+        
+        try {
+            if (txtLoginUser.getText().isEmpty() || txtLoginPass.getPassword().length == 0) {
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos");
+                return;
+            }
+
+            String username = txtLoginUser.getText();
+            String password = new String(txtLoginPass.getPassword());
+
+            boolean isValid = false;
+            for (IremoteP2P node : myremoteObject.getNetwork()) {
+                if (node.validateUser(username, password)) {
+                    isValid = true;
+                    break;
+                }
+            }
+
+            if (isValid) {
+                JOptionPane.showMessageDialog(this, "Login bem-sucedido!");
+                // Prossiga para a próxima tela ou funcionalidade
+            } else {
+                JOptionPane.showMessageDialog(this, "Credenciais inválidas!");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao realizar login: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btLoginActionPerformed
+
+    private void lstUsersValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstUsersValueChanged
+        if (!evt.getValueIsAdjusting()) {
+            // Obter o valor selecionado da lista
+            String selectedUser = (String) lstUsers.getSelectedValue();
+
+            // Verificar se há um item selecionado antes de definir o valor no campo de texto
+            if (selectedUser != null) {
+                txtLoginUser.setText(selectedUser);
+            }
+        }
+    }//GEN-LAST:event_lstUsersValueChanged
+
+    private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
+
+        try {
+            if (txtRegisterUser.getText().isEmpty() || txtRegisterPass.getPassword().length == 0) {
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos");
+                return;
+            }
+            User newUser = new User(txtRegisterUser.getText());
+            newUser.generateKeys();
+            newUser.save(new String(txtRegisterPass.getPassword()));
+
+            myremoteObject.registerUser(newUser); // Registra o usuário no servidor
+            // Atualiza a lista de usuários
+            loadUsersFromFiles();
+            JOptionPane.showMessageDialog(this, "Usuário registrado com sucesso!");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao registrar o usuário: " + ex.getMessage());
+            txtRegisterUser.setText("");
+            txtRegisterPass.setText("");
+        }
+    }//GEN-LAST:event_btRegisterActionPerformed
 
     /**
      * @param args the command line arguments
@@ -375,23 +588,39 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btLogin;
+    private javax.swing.JButton btRegister;
     private javax.swing.JButton btStartServer;
     private javax.swing.JLabel imgServerRunning;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JList<String> lstUsers;
     private javax.swing.JPanel pnServer;
+    private javax.swing.JPasswordField txtLoginPass;
+    private javax.swing.JTextField txtLoginUser;
     private javax.swing.JTextArea txtLstTransdactions;
     private javax.swing.JTextArea txtNetwork;
     private javax.swing.JTextField txtNodeAddress;
+    private javax.swing.JTextArea txtPublicKey;
+    private javax.swing.JPasswordField txtRegisterPass;
+    private javax.swing.JTextField txtRegisterUser;
     private javax.swing.JTextField txtServerListeningObjectName;
     private javax.swing.JTextField txtServerListeningPort;
     private javax.swing.JTextPane txtServerLog;
@@ -438,6 +667,41 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
         } catch (RemoteException ex) {
             onException(ex, "on transaction");
             Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void loadUsersFromFiles() {
+        try {
+            // Defina o caminho correto onde os arquivos de usuários estão sendo salvos
+            File dir = new File("keys/");
+
+            // Cria um novo modelo para a JList
+            DefaultListModel<String> userListModel = new DefaultListModel<>();
+
+            // Filtra os arquivos que possuem a extensão ".pub" (chaves públicas)
+            File[] files = dir.listFiles((d, name) -> name.endsWith(".pub"));
+
+            // Verifica se existem arquivos .pub encontrados
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    // Extrai o nome do arquivo sem a extensão .pub (nome do usuário)
+                    String fileName = file.getName();
+                    String userName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+                    // Adiciona o nome do usuário ao modelo
+                    userListModel.addElement(userName);
+                    
+                    myremoteObject.users.add(new User(userName));
+                }
+
+                // Define o modelo da JList com os nomes dos usuários
+                lstUsers.setModel(userListModel);
+            } else {
+                JOptionPane.showMessageDialog(this, "Nenhum arquivo de usuário .pub encontrado.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao carregar usuários.");
         }
     }
 

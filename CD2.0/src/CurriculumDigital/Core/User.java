@@ -1,6 +1,7 @@
 package CurriculumDigital.Core;
 
 import blockchain.utils.SecurityUtils;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,12 +13,14 @@ import java.security.PublicKey;
 /**
  * Classe que representa um usuário com chaves de segurança.
  */
-public class User {
+public class User implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String name;
     private PublicKey pub;   // Chave pública
-    private PrivateKey priv; // Chave privada
-    private Key sim;         // Chave simétrica (AES)
+    private transient PrivateKey priv; // Chave privada (transient para não ser serializada)
+    private transient Key sim;         // Chave simétrica (transient para não ser serializada)
+    private String passwordHash;
 
     // Construtores
     public User(String name) {
@@ -28,8 +31,17 @@ public class User {
         this.name = "noName";
     }
 
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
     /**
      * Gera as chaves do usuário.
+     *
      * @throws Exception Em caso de erro na geração.
      */
     public void generateKeys() throws Exception {
@@ -41,10 +53,12 @@ public class User {
 
     /**
      * Salva as chaves do usuário em ficheiros.
+     *
      * @param password Senha para proteger as chaves privada e simétrica.
      * @throws Exception Em caso de erro ao salvar.
      */
     public void save(String password) throws Exception {
+        //this.passwordHash = blockchain .utils.hashPassword(password);
         // Cria o diretório "keys" se não existir
         Path dir = Paths.get("keys");
         if (!Files.exists(dir)) {
@@ -64,6 +78,7 @@ public class User {
 
     /**
      * Carrega as chaves do usuário de ficheiros.
+     *
      * @param password Senha para descriptografar as chaves.
      * @throws Exception Em caso de erro ao carregar ou descriptografar.
      */
@@ -83,11 +98,14 @@ public class User {
         this.pub = SecurityUtils.getPublicKey(Files.readAllBytes(pubPath));
     }
 
+    
+    
     /**
      * Carrega apenas a chave pública do ficheiro.
+     *
      * @throws Exception Em caso de erro ao carregar.
      */
-    public void loadPublic() throws Exception {
+    public  void loadPublic() throws Exception {
         Path pubPath = Paths.get("keys", this.name + ".pub");
 
         if (!Files.exists(pubPath)) {

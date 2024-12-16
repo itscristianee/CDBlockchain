@@ -330,7 +330,7 @@ public class FormLogin extends javax.swing.JFrame {
     private void loadUsersFromFiles() {
         try {
             // Defina o caminho correto onde os arquivos de usuários estão sendo salvos
-            File dir = new File("/Users/cristiane/NetBeansProjects/CurriculumDigitalBlockchain/CD2.0/keys/");
+            File dir = new File("keys/");
 
             // Cria um novo modelo para a JList
             DefaultListModel<String> userListModel = new DefaultListModel<>();

@@ -14,31 +14,40 @@
 //::                                                               (c)2024   ::
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //////////////////////////////////////////////////////////////////////////////
-
-
 package p2p;
 
+import CurriculumDigital.Core.User;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
 /**
- * Created on 27/11/2024, 17:42:15 
+ * Created on 27/11/2024, 17:42:15
+ *
  * @author manso - computer
  */
 public interface IremoteP2P extends Remote {
+
     //:::: N E T WO R K  :::::::::::
     public String getAdress() throws RemoteException;
+
     public void addNode(IremoteP2P node) throws RemoteException;
-    public List<IremoteP2P> getNetwork() throws  RemoteException;
+
+    public List<IremoteP2P> getNetwork() throws RemoteException;
+
     //::::::::::: T R A NS A C T IO N S  :::::::::::
     public void addTransaction(String data) throws RemoteException;
+
     public List<String> getTransactions() throws RemoteException;
-    public void removeTransaction(String data )throws RemoteException;
+
+    public void removeTransaction(String data) throws RemoteException;
+
     public void sinchronizeTransactions(IremoteP2P node) throws RemoteException;
-    
-    
-    
-    
+
+    public void registerUser(User user) throws RemoteException;
+
+    public boolean validateUser(String username, String passwordHash) throws RemoteException;
+
+    public List<User> getUsers();
 
 }

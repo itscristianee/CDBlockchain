@@ -15,14 +15,13 @@
 //////////////////////////////////////////////////////////////////////////////
 package p2p;
 
+import CurriculumDigital.Core.User;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import blockchain.utils.RMI;
 
 /**
@@ -32,16 +31,21 @@ import blockchain.utils.RMI;
  */
 public class OremoteP2P extends UnicastRemoteObject implements IremoteP2P {
 
+    
+
     String address;
     CopyOnWriteArrayList<IremoteP2P> network;
     CopyOnWriteArraySet<String> transactions;
+    CopyOnWriteArraySet<User> users ;
     P2Plistener listener;
 
     public OremoteP2P(String address, P2Plistener listener) throws RemoteException {
         super(RMI.getAdressPort(address));
         this.address = address;
         this.network = new CopyOnWriteArrayList<>();
+        this.users = new CopyOnWriteArraySet<>();
         transactions = new CopyOnWriteArraySet<>();
+        
         // addNode(this);
         this.listener = listener;
         listener.onStart("Object " + address + " listening");
@@ -94,6 +98,11 @@ public class OremoteP2P extends UnicastRemoteObject implements IremoteP2P {
         for (IremoteP2P iremoteP2P : network) {
             System.out.println(iremoteP2P.getAdress());
 
+        }
+
+        // Sincronize usuários
+        for (User user : node.getUsers()) {
+            this.registerUser(user);
         }
 
     }
@@ -169,6 +178,43 @@ public class OremoteP2P extends UnicastRemoteObject implements IremoteP2P {
         this.transactions.addAll(node.getTransactions());
         listener.onTransaction(address);
 
+    }
+
+    @Override
+    public void registerUser(User user) throws RemoteException {
+        if (users.contains(user)) {
+            System.out.println("Usuário já registrado: " + user.getName());
+            return;
+        }
+        users.add(user);
+        System.out.println("Usuário registrado: " + user.getName());
+
+        // Propaga o novo usuário para os outros nós
+        for (IremoteP2P node : network) {
+            node.registerUser(user);
+        }
+    }
+
+    public boolean validateUser(String username, String passwordHash) throws RemoteException {
+        for (User user : users) {
+            if (user.getName().equals(username) && user.getPasswordHash().equals(passwordHash)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+//   s
+
+    @Override
+    public List<User> getUsers() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    /**
+     * @param users the users to set
+     */
+    public void setUsers(CopyOnWriteArraySet<User> users) {
+        this.users = users;
     }
 
 }
