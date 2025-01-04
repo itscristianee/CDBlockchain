@@ -37,7 +37,7 @@ public final class MerkleTree implements Serializable {
     // merkle tree hashs
     private List<List<String>> hashTree;
     // elements of tree
-    private List elements;
+    List elements;
 
     /**
      * Builds a merkle tree with an array of data
@@ -131,7 +131,7 @@ public final class MerkleTree implements Serializable {
         //list of proofs
         List<String> proof = new ArrayList<>();
         //index of element
-        int index = getElements().indexOf(data);
+        int index = elements.indexOf(data);
         if (index < 0) { //element not found
             return proof; // empty proof
         }
@@ -217,7 +217,7 @@ public final class MerkleTree implements Serializable {
      */
     public boolean isValid() {
         //verify the hash of elements  int the bottom of tree
-        for (int i = 0; i < this.getElements().size(); i++) {
+        for (int i = 0; i < this.elements.size(); i++) {
             if (!getHashValue(this.elements.get(i).toString()).equals(hashTree.get(hashTree.size() - 1).get(i))) {
                 return false;
             }
@@ -256,7 +256,7 @@ public final class MerkleTree implements Serializable {
     public String toTree() {
         //calculate maxSize of elementos in chars
         int SIZE = 9; // minimum size
-        for (Object elem : getElements()) {
+        for (Object elem : elements) {
             if (elem.toString().length() > SIZE) {
                 SIZE = elem.toString().length();
             }
@@ -283,7 +283,7 @@ public final class MerkleTree implements Serializable {
 
         }
         //print the elements
-        for (Object elem : getElements()) {
+        for (Object elem : elements) {
             txt.append(centerString(elem.toString(), SIZE));
             txt.append(String.format("%" + SIZE + "s", ""));
         }
@@ -330,7 +330,7 @@ public final class MerkleTree implements Serializable {
      */
     public String getElementsString() {
         StringBuilder txt = new StringBuilder();
-        for (Object obj : getElements()) {
+        for (Object obj : elements) {
             txt.append(obj.toString()+ "\n");
         }
         return txt.toString().trim();

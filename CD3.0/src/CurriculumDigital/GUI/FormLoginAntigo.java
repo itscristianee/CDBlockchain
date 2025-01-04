@@ -16,12 +16,12 @@ import javax.swing.JOptionPane;
  *
  * @author cristiane
  */
-public class FormLogin extends javax.swing.JFrame {
+public class FormLoginAntigo extends javax.swing.JFrame {
 
     /**
      * Creates new form FormLogin
      */
-    public FormLogin() throws Exception {
+    public FormLoginAntigo() throws Exception {
 
         initComponents();
         loadUsersFromFiles();
@@ -30,7 +30,7 @@ public class FormLogin extends javax.swing.JFrame {
 
     }
 
-    public FormLogin(User u) throws Exception {
+    public FormLoginAntigo(User u) throws Exception {
 
         initComponents();
         loadUsersFromFiles();
@@ -66,6 +66,7 @@ public class FormLogin extends javax.swing.JFrame {
         txtRegisterUser = new javax.swing.JTextField();
         txtRegisterPass = new javax.swing.JPasswordField();
         btRegister = new javax.swing.JButton();
+        button2 = new java.awt.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
@@ -166,6 +167,8 @@ public class FormLogin extends javax.swing.JFrame {
             }
         });
 
+        button2.setLabel("button2");
+
         javax.swing.GroupLayout panel2Layout = new javax.swing.GroupLayout(panel2);
         panel2.setLayout(panel2Layout);
         panel2Layout.setHorizontalGroup(
@@ -181,13 +184,13 @@ public class FormLogin extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtRegisterUser, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(71, Short.MAX_VALUE))
+                    .addComponent(btRegister, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
         panel2Layout.setVerticalGroup(
             panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel2Layout.createSequentialGroup()
-                .addGap(80, 80, 80)
+                .addGap(90, 90, 90)
                 .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtRegisterUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -197,7 +200,7 @@ public class FormLogin extends javax.swing.JFrame {
                     .addComponent(txtRegisterPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
                 .addComponent(btRegister)
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Registar", panel2);
@@ -239,7 +242,7 @@ public class FormLogin extends javax.swing.JFrame {
             new FormCurriculumDigital(u).setVisible(true);
             this.setVisible(false);
         } catch (Exception ex) {
-            Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormLoginAntigo.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "User errado");
         }
 
@@ -263,7 +266,7 @@ public class FormLogin extends javax.swing.JFrame {
             loadUsersFromFiles();
 
         } catch (Exception ex) {
-            Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormLoginAntigo.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Erro ao criar o User!");
             txtRegisterUser.setText("");
             txtRegisterPass.setText("");
@@ -305,23 +308,24 @@ public class FormLogin extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormLoginAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormLoginAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormLoginAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormLoginAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new FormLogin().setVisible(true);
+                    new FormLoginAntigo().setVisible(true);
                 } catch (Exception ex) {
-                    Logger.getLogger(FormLogin.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FormLoginAntigo.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -364,6 +368,7 @@ public class FormLogin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btLogin;
     private javax.swing.JButton btRegister;
+    private java.awt.Button button2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

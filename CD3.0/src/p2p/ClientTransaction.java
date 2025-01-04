@@ -35,7 +35,7 @@ public class ClientTransaction {
             //node 10
         IremoteP2P node = (IremoteP2P) RMI.getRemote("//10.10.208.35:10010/P2P");
         
-        node.addTransaction("mestrado do xxxx pelo IPT");
+        node.addTransaction("Aluno | xxxx | IPT");
         
 ////        
        

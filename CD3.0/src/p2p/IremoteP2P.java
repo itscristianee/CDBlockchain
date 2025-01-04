@@ -16,7 +16,8 @@
 //////////////////////////////////////////////////////////////////////////////
 package p2p;
 
-import CurriculumDigital.Core.User;
+import blockchain.utils.Block;
+import blockchain.utils.BlockChain;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -35,19 +36,42 @@ public interface IremoteP2P extends Remote {
 
     public List<IremoteP2P> getNetwork() throws RemoteException;
 
-    //::::::::::: T R A NS A C T IO N S  :::::::::::
+    //::::::::::: T R A N S A C T IO N S  :::::::::::
+    public int getTransactionsSize() throws RemoteException;
+
     public void addTransaction(String data) throws RemoteException;
 
     public List<String> getTransactions() throws RemoteException;
+    
+    public void removeTransactions(List<String> transactions) throws RemoteException;
 
-    public void removeTransaction(String data) throws RemoteException;
+    public void synchronizeTransactions(IremoteP2P node) throws RemoteException;
 
-    public void sinchronizeTransactions(IremoteP2P node) throws RemoteException;
+    //::::::::::::::::: M I N E R :::::::::::::::::::::::::::::::::::::::::::
+    public void startMining(String msg, int zeros) throws RemoteException;
 
-    public void registerUser(User user) throws RemoteException;
+    public void stopMining(int nonce) throws RemoteException;
 
-    public boolean validateUser(String username, String passwordHash) throws RemoteException;
+    public boolean isMining() throws RemoteException;
 
-    public List<User> getUsers();
+    public int mine(String msg, int zeros) throws RemoteException;
+    
+    //Autenticacao
+    boolean register(String username, String password) throws RemoteException;
+    boolean authenticate(String username, String password) throws RemoteException;
+
+
+    //::::::::::::::::: B L O C K C H A I N :::::::::::::::::::::::::::::::::::::::::::
+    public void addBlock(Block b) throws RemoteException;
+
+    public int getBlockchainSize() throws RemoteException;
+
+    public String getBlockchainLastHash() throws RemoteException;
+    
+    public BlockChain getBlockchain() throws RemoteException;
+
+    public void synchnonizeBlockchain() throws RemoteException;
+    
+    public List<String> getBlockchainTransactions()throws RemoteException;
 
 }

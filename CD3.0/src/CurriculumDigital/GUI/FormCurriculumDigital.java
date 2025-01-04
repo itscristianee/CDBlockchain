@@ -4,7 +4,7 @@
  */
 package CurriculumDigital.GUI;
 
-import CurriculumDigital.Core.CurriculumDigital;
+import CurriculumDigital.Core.CD_exe;
 import CurriculumDigital.Core.Evento;
 import CurriculumDigital.Core.User;
 import blockchain.utils.Block;
@@ -28,7 +28,7 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
     private List<Evento> lstEventos;
     private List<Evento> lstBuffer;
     private DefaultListModel listModel;
-    private CurriculumDigital sistema;
+    private CD_exe sistema;
 
     /**
      * Creates new form NewJFrame
@@ -43,7 +43,7 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         lstPessoas.setModel(listModel);
 
         String blockchainFile = "./blockchain.obj";
-        sistema = new CurriculumDigital(blockchainFile);
+        sistema = new CD_exe(blockchainFile);
 
         try {
             sistema.load(blockchainFile);
@@ -79,7 +79,6 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
 
         // Adiciona os eventos ao campo de texto
         for (Evento evento : eventosFiltrados) {
-            txtEventos.append(evento.toString() + "\n");
             // Adicionar o nome da pessoa ao modelo da JList (evitar duplicatas)
             if (!listModel.contains(evento.getNomePessoa())) {
                 listModel.addElement(evento.getNomePessoa());
@@ -645,9 +644,9 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             // TODO add your handling code here:
-            new FormLogin(myUser).setVisible(true);
+            new FormPrincipal().setVisible(true);
         } catch (Exception ex) {
-            Logger.getLogger(FormAntigo.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormCurriculumDigital.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.setVisible(false);
     }//GEN-LAST:event_btLogout1btAcercaActionPerformed

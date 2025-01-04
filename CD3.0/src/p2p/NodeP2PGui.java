@@ -15,23 +15,32 @@
 //////////////////////////////////////////////////////////////////////////////
 package p2p;
 
-import CurriculumDigital.Core.User;
-import CurriculumDigital.GUI.FormCurriculumDigital;
+import blockchain.utils.Block;
+import blockchain.utils.BlockChain;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
+import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
+import miner.Miner;
 import blockchain.utils.GuiUtils;
 import blockchain.utils.RMI;
-import java.io.File;
-import java.util.Base64;
-import javax.swing.DefaultListModel;
 
 /**
  *
@@ -41,12 +50,37 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
 
     OremoteP2P myremoteObject;
 
+    String multicastAddress = "224.0.0.1"; // multicast Address
+    int port = 5000; // multicast port
+
+    public NodeP2PGui(int port) {
+        this();
+        Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
+        int largura = (int) tamanhoTela.getWidth() / 6;
+        int altura = (int) tamanhoTela.getHeight() / 6;
+        setLocation(largura * port, altura * port);
+
+        txtPort.setText(10010 + port + "");
+        btStartServerActionPerformed(null);
+
+        txtTranaction.setText(txtTranaction.getText() + port);
+        btAddTransactionActionPerformed(null);
+
+    }
+
     /**
      * Creates new form MessengerGUI
      */
     public NodeP2PGui() {
         initComponents();
+        try {
+            txtAddress.setText(InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException ex) {
+            txtAddress.setText("Localhost");
+        }
     }
+
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -58,42 +92,56 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tpMain = new javax.swing.JTabbedPane();
         pnServer = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         btStartServer = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
-        txtServerListeningPort = new javax.swing.JTextField();
-        txtServerListeningObjectName = new javax.swing.JTextField();
+        txtAddress = new javax.swing.JTextField();
+        txtPort = new javax.swing.JTextField();
+        txtObjectName = new javax.swing.JTextField();
         imgServerRunning = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtServerLog = new javax.swing.JTextPane();
-        jPanel2 = new javax.swing.JPanel();
-        txtNodeAddress = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        pnNetwork = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtNetwork = new javax.swing.JTextArea();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        txtLstTransdactions = new javax.swing.JTextArea();
-        txtTranaction = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        txtPublicKey = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        txtLoginUser = new javax.swing.JTextField();
-        txtLoginPass = new javax.swing.JPasswordField();
-        btLogin = new javax.swing.JButton();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        lstUsers = new javax.swing.JList<>();
+        txtNodeAddress = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        pnTransaction = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        txtRegisterUser = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        txtRegisterPass = new javax.swing.JPasswordField();
-        btRegister = new javax.swing.JButton();
+        btAddTransaction = new javax.swing.JButton();
+        txtTranaction = new javax.swing.JTextField();
+        jPanel12 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtListTransdactions = new javax.swing.JTextArea();
+        jPanel10 = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        txtLogMining = new javax.swing.JTextArea();
+        jPanel13 = new javax.swing.JPanel();
+        lblMining = new javax.swing.JLabel();
+        lblWinner = new javax.swing.JLabel();
+        jPanel14 = new javax.swing.JPanel();
+        btMining = new javax.swing.JButton();
+        spZeros = new javax.swing.JSpinner();
+        pnBlockchain = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        txtBlockHeader = new javax.swing.JTextArea();
+        jPanel8 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        txtBlockTransactions = new javax.swing.JTextArea();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        lstBlcockchain = new javax.swing.JList<>();
+        pnAbout = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel15 = new javax.swing.JPanel();
+        txtExceptionLog = new javax.swing.JLabel();
+        txtTimeLog = new javax.swing.JLabel();
+        txtTitleLog = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -121,18 +169,24 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
         });
         jPanel3.add(btStartServer, java.awt.BorderLayout.WEST);
 
-        jPanel7.setLayout(new java.awt.GridLayout(2, 0));
+        jPanel7.setLayout(new java.awt.GridLayout(3, 0));
 
-        txtServerListeningPort.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtServerListeningPort.setText("10010");
-        txtServerListeningPort.setBorder(javax.swing.BorderFactory.createTitledBorder("Port Number"));
-        txtServerListeningPort.setPreferredSize(new java.awt.Dimension(200, 36));
-        jPanel7.add(txtServerListeningPort);
+        txtAddress.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtAddress.setText("localhost");
+        txtAddress.setBorder(javax.swing.BorderFactory.createTitledBorder("Address"));
+        txtAddress.setPreferredSize(new java.awt.Dimension(200, 36));
+        jPanel7.add(txtAddress);
 
-        txtServerListeningObjectName.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtServerListeningObjectName.setText("remoteP2P");
-        txtServerListeningObjectName.setBorder(javax.swing.BorderFactory.createTitledBorder("ObjectName"));
-        jPanel7.add(txtServerListeningObjectName);
+        txtPort.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtPort.setText("10010");
+        txtPort.setBorder(javax.swing.BorderFactory.createTitledBorder("Port Number"));
+        txtPort.setPreferredSize(new java.awt.Dimension(200, 36));
+        jPanel7.add(txtPort);
+
+        txtObjectName.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtObjectName.setText("remoteP2P");
+        txtObjectName.setBorder(javax.swing.BorderFactory.createTitledBorder("ObjectName"));
+        jPanel7.add(txtObjectName);
 
         jPanel3.add(jPanel7, java.awt.BorderLayout.CENTER);
 
@@ -148,239 +202,237 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
 
         pnServer.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        jTabbedPane1.addTab("Server", pnServer);
+        tpMain.addTab("Server", new javax.swing.ImageIcon(getClass().getResource("/multimedia/server_32.png")), pnServer); // NOI18N
+
+        pnNetwork.setLayout(new java.awt.BorderLayout());
+
+        txtNetwork.setEditable(false);
+        txtNetwork.setColumns(20);
+        txtNetwork.setRows(5);
+        txtNetwork.setBorder(javax.swing.BorderFactory.createTitledBorder("Network Nodes"));
+        jScrollPane2.setViewportView(txtNetwork);
+
+        pnNetwork.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        jPanel5.setLayout(new java.awt.BorderLayout());
 
         txtNodeAddress.setText("//10.10.208.35:10010/remoteP2P");
+        txtNodeAddress.setBorder(javax.swing.BorderFactory.createTitledBorder("Remote Object Address"));
         txtNodeAddress.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNodeAddressActionPerformed(evt);
             }
         });
+        jPanel5.add(txtNodeAddress, java.awt.BorderLayout.CENTER);
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/startClient.jpg"))); // NOI18N
         jButton1.setText("Connect");
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+        jPanel5.add(jButton1, java.awt.BorderLayout.WEST);
 
-        txtNetwork.setColumns(20);
-        txtNetwork.setRows(5);
-        jScrollPane2.setViewportView(txtNetwork);
+        pnNetwork.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtNodeAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(61, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNodeAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(41, Short.MAX_VALUE))
-        );
+        tpMain.addTab("P2pNetwork", new javax.swing.ImageIcon(getClass().getResource("/multimedia/p2p_32.png")), pnNetwork); // NOI18N
 
-        jTabbedPane1.addTab("P2pNetwork", jPanel2);
+        pnTransaction.setLayout(new java.awt.BorderLayout());
 
-        txtLstTransdactions.setColumns(20);
-        txtLstTransdactions.setRows(5);
-        jScrollPane3.setViewportView(txtLstTransdactions);
+        jPanel6.setLayout(new java.awt.BorderLayout());
+
+        btAddTransaction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/transaction_64.png"))); // NOI18N
+        btAddTransaction.setText("Add");
+        btAddTransaction.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        btAddTransaction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAddTransactionActionPerformed(evt);
+            }
+        });
+        jPanel6.add(btAddTransaction, java.awt.BorderLayout.EAST);
 
         txtTranaction.setText("transaction to network");
+        txtTranaction.setBorder(javax.swing.BorderFactory.createTitledBorder("Transaction"));
+        jPanel6.add(txtTranaction, java.awt.BorderLayout.CENTER);
 
-        jButton2.setText("Add");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        pnTransaction.add(jPanel6, java.awt.BorderLayout.PAGE_START);
+
+        jPanel12.setLayout(new java.awt.BorderLayout());
+
+        txtListTransdactions.setEditable(false);
+        txtListTransdactions.setColumns(20);
+        txtListTransdactions.setRows(5);
+        txtListTransdactions.setText("transaction");
+        txtListTransdactions.setBorder(javax.swing.BorderFactory.createTitledBorder("List of Transactions"));
+        jScrollPane3.setViewportView(txtListTransdactions);
+
+        jPanel12.add(jScrollPane3, java.awt.BorderLayout.CENTER);
+
+        jPanel10.setLayout(new java.awt.BorderLayout());
+
+        jPanel11.setLayout(new java.awt.BorderLayout());
+
+        txtLogMining.setEditable(false);
+        txtLogMining.setColumns(20);
+        txtLogMining.setRows(5);
+        txtLogMining.setBorder(javax.swing.BorderFactory.createTitledBorder("Miner Log"));
+        jScrollPane5.setViewportView(txtLogMining);
+
+        jPanel11.add(jScrollPane5, java.awt.BorderLayout.CENTER);
+
+        jPanel13.setLayout(new java.awt.BorderLayout());
+
+        lblMining.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/working.gif"))); // NOI18N
+        lblMining.setText("mining");
+        jPanel13.add(lblMining, java.awt.BorderLayout.CENTER);
+
+        lblWinner.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/winner.gif"))); // NOI18N
+        jPanel13.add(lblWinner, java.awt.BorderLayout.EAST);
+
+        jPanel11.add(jPanel13, java.awt.BorderLayout.SOUTH);
+
+        jPanel10.add(jPanel11, java.awt.BorderLayout.CENTER);
+
+        jPanel14.setLayout(new java.awt.BorderLayout());
+
+        btMining.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/mining.png"))); // NOI18N
+        btMining.setText("Start Mining");
+        btMining.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btMiningActionPerformed(evt);
             }
         });
+        jPanel14.add(btMining, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 129, Short.MAX_VALUE))
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtTranaction, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtTranaction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
-                .addGap(35, 35, 35)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
-        );
+        spZeros.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        spZeros.setModel(new javax.swing.SpinnerNumberModel(3, 0, 6, 1));
+        spZeros.setBorder(javax.swing.BorderFactory.createTitledBorder("Nº Zeros"));
+        jPanel14.add(spZeros, java.awt.BorderLayout.EAST);
 
-        jTabbedPane1.addTab("Transaction", jPanel4);
+        jPanel10.add(jPanel14, java.awt.BorderLayout.PAGE_START);
 
-        txtPublicKey.setEditable(false);
-        txtPublicKey.setColumns(20);
-        txtPublicKey.setRows(5);
-        jScrollPane4.setViewportView(txtPublicKey);
+        jPanel12.add(jPanel10, java.awt.BorderLayout.WEST);
 
-        jLabel1.setText("Username");
+        pnTransaction.add(jPanel12, java.awt.BorderLayout.CENTER);
 
-        jLabel2.setText("password");
+        tpMain.addTab("Transaction", new javax.swing.ImageIcon(getClass().getResource("/multimedia/transaction_32.png")), pnTransaction); // NOI18N
 
-        txtLoginUser.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        pnBlockchain.setLayout(new java.awt.BorderLayout());
 
-        txtLoginPass.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Block Data"));
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
-        btLogin.setText("Login");
-        btLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLoginActionPerformed(evt);
-            }
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane7.setPreferredSize(new java.awt.Dimension(252, 105));
+
+        txtBlockHeader.setEditable(false);
+        txtBlockHeader.setColumns(20);
+        txtBlockHeader.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        txtBlockHeader.setRows(5);
+        txtBlockHeader.setBorder(javax.swing.BorderFactory.createTitledBorder("Header"));
+        jScrollPane7.setViewportView(txtBlockHeader);
+
+        jPanel4.add(jScrollPane7, java.awt.BorderLayout.CENTER);
+
+        jPanel2.add(jPanel4, java.awt.BorderLayout.WEST);
+
+        jPanel8.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane6.setViewportBorder(javax.swing.BorderFactory.createTitledBorder("Transactions"));
+
+        txtBlockTransactions.setEditable(false);
+        txtBlockTransactions.setColumns(20);
+        txtBlockTransactions.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        txtBlockTransactions.setRows(5);
+        jScrollPane6.setViewportView(txtBlockTransactions);
+
+        jPanel8.add(jScrollPane6, java.awt.BorderLayout.CENTER);
+
+        jPanel2.add(jPanel8, java.awt.BorderLayout.CENTER);
+
+        pnBlockchain.add(jPanel2, java.awt.BorderLayout.PAGE_START);
+
+        lstBlcockchain.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
         });
-
-        jScrollPane5.setBorder(javax.swing.BorderFactory.createTitledBorder("Users"));
-
-        lstUsers.setFont(new java.awt.Font("Monospaced", 1, 14)); // NOI18N
-        lstUsers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        lstUsers.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+        lstBlcockchain.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                lstUsersValueChanged(evt);
+                lstBlcockchainValueChanged(evt);
             }
         });
-        jScrollPane5.setViewportView(lstUsers);
+        jScrollPane8.setViewportView(lstBlcockchain);
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(txtLoginUser, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(txtLoginPass, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        pnBlockchain.add(jScrollPane8, java.awt.BorderLayout.CENTER);
+
+        tpMain.addTab("Blockchain", new javax.swing.ImageIcon(getClass().getResource("/multimedia/blockchain_32.png")), pnBlockchain); // NOI18N
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/manso.png"))); // NOI18N
+        jLabel1.setText("(c) Antóni0 M@nso 2024");
+
+        javax.swing.GroupLayout pnAboutLayout = new javax.swing.GroupLayout(pnAbout);
+        pnAbout.setLayout(pnAboutLayout);
+        pnAboutLayout.setHorizontalGroup(
+            pnAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnAboutLayout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addGap(0, 295, Short.MAX_VALUE))
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(68, 68, 68)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtLoginUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtLoginPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
-                .addComponent(btLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(67, 67, 67))
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        pnAboutLayout.setVerticalGroup(
+            pnAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnAboutLayout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addGap(0, 235, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Login", jPanel5);
+        tpMain.addTab("About", new javax.swing.ImageIcon(getClass().getResource("/multimedia/about.png")), pnAbout); // NOI18N
 
-        jLabel3.setText("Username");
+        getContentPane().add(tpMain, java.awt.BorderLayout.CENTER);
 
-        txtRegisterUser.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jPanel15.setLayout(new java.awt.BorderLayout());
 
-        jLabel4.setText("password");
+        txtExceptionLog.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtExceptionLog.setForeground(new java.awt.Color(255, 51, 102));
+        txtExceptionLog.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtExceptionLog.setText("Network node");
+        txtExceptionLog.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jPanel15.add(txtExceptionLog, java.awt.BorderLayout.CENTER);
 
-        txtRegisterPass.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtTimeLog.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtTimeLog.setText("00:00:00.000");
+        jPanel15.add(txtTimeLog, java.awt.BorderLayout.WEST);
 
-        btRegister.setText("Registar");
-        btRegister.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btRegisterActionPerformed(evt);
-            }
-        });
+        txtTitleLog.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtTitleLog.setText("                                                     ");
+        jPanel15.add(txtTitleLog, java.awt.BorderLayout.EAST);
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(92, 92, 92)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtRegisterPass))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtRegisterUser, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(114, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(80, 80, 80)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtRegisterUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtRegisterPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37)
-                .addComponent(btRegister)
-                .addContainerGap(160, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("Registar", jPanel6);
-
-        getContentPane().add(jTabbedPane1, java.awt.BorderLayout.PAGE_START);
+        getContentPane().add(jPanel15, java.awt.BorderLayout.SOUTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btStartServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btStartServerActionPerformed
         try {
-            int port = Integer.parseInt(txtServerListeningPort.getText());
-            String name = txtServerListeningObjectName.getText();
+            int serverPort = Integer.parseInt(txtPort.getText());
+            String name = txtObjectName.getText();
+
             //local adress of server
-            String host = " 192.168.1.129"; //InetAddress.getByName("localhost").getHostAddress();  //.InetAddress.getLocalHost().getHostAddress();
+            String host = txtAddress.getText().trim(); //
             //create registry to object
-            LocateRegistry.createRegistry(port);
+            LocateRegistry.createRegistry(serverPort);
             //create adress of remote object
-            String address = String.format("//%s:%d/%s", host, port, name);
+            String address = String.format("//%s:%d/%s", host, serverPort, name);
             myremoteObject = new OremoteP2P(address, this);
             //link adress to object
             Naming.rebind(address, myremoteObject);
+
+
+            onBlockchainUpdate(myremoteObject.getBlockchain());
         } catch (Exception ex) {
             onException(ex, "Starting server");
             Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
@@ -394,19 +446,7 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            String address = txtNodeAddress.getText().trim();
-
-            // Remover a palavra "Object" e quaisquer espaços adicionais
-            if (address.startsWith("Object")) {
-                address = address.replace("Object", "").trim();
-            }
-
-            // Se ainda houver "listening" no final, removê-lo também
-            if (address.endsWith("listening")) {
-                address = address.replace("listening", "").trim();
-            }
-
-            System.out.println(address);
+            String address = txtNodeAddress.getText();
             IremoteP2P node = (IremoteP2P) RMI.getRemote(address);
             myremoteObject.addNode(node);
         } catch (Exception ex) {
@@ -415,79 +455,62 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btAddTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddTransactionActionPerformed
         try {
             myremoteObject.addTransaction(txtTranaction.getText());
         } catch (RemoteException ex) {
             onException(ex, "transactions");
             Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btAddTransactionActionPerformed
 
-    private void btLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginActionPerformed
+    private void btMiningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMiningActionPerformed
 
-        
-        try {
-            if (txtLoginUser.getText().isEmpty() || txtLoginPass.getPassword().length == 0) {
-                JOptionPane.showMessageDialog(this, "Preencha todos os campos");
-                return;
-            }
-
-            String username = txtLoginUser.getText();
-            String password = new String(txtLoginPass.getPassword());
-
-            boolean isValid = false;
-            for (IremoteP2P node : myremoteObject.getNetwork()) {
-                if (node.validateUser(username, password)) {
-                    isValid = true;
-                    break;
+        new Thread(() -> {
+            try {
+                //fazer um bloco
+                List<String> blockTransactions = myremoteObject.getTransactions();
+                if (blockTransactions.size() < 0) {
+                    return;
                 }
+                Block b = new Block(myremoteObject.getBlockchainLastHash(), blockTransactions);
+                //remover as transacoes
+                myremoteObject.removeTransactions(blockTransactions);
+                //minar o bloco
+                int zeros = (Integer) spZeros.getValue();
+                int nonce = myremoteObject.mine(b.getMinerData(), zeros);
+                //atualizar o nonce
+                b.setNonce(nonce, zeros);
+                //adiconar o bloco
+                myremoteObject.addBlock(b);
+
+            } catch (Exception ex) {
+                onException(ex, "Start ming");
+                Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }).start();
 
-            if (isValid) {
-                JOptionPane.showMessageDialog(this, "Login bem-sucedido!");
-                // Prossiga para a próxima tela ou funcionalidade
-            } else {
-                JOptionPane.showMessageDialog(this, "Credenciais inválidas!");
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao realizar login: " + ex.getMessage());
-        }
-    }//GEN-LAST:event_btLoginActionPerformed
 
-    private void lstUsersValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstUsersValueChanged
-        if (!evt.getValueIsAdjusting()) {
-            // Obter o valor selecionado da lista
-            String selectedUser = (String) lstUsers.getSelectedValue();
+    }//GEN-LAST:event_btMiningActionPerformed
 
-            // Verificar se há um item selecionado antes de definir o valor no campo de texto
-            if (selectedUser != null) {
-                txtLoginUser.setText(selectedUser);
-            }
-        }
-    }//GEN-LAST:event_lstUsersValueChanged
-
-    private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
-
+    private void lstBlcockchainValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstBlcockchainValueChanged
         try {
-            if (txtRegisterUser.getText().isEmpty() || txtRegisterPass.getPassword().length == 0) {
-                JOptionPane.showMessageDialog(this, "Preencha todos os campos");
+            BlockChain bc = myremoteObject.getBlockchain();
+            int index = bc.getSize() - lstBlcockchain.getSelectedIndex() - 1;
+            if (index < 0 || index >= bc.getSize() ) {
                 return;
             }
-            User newUser = new User(txtRegisterUser.getText());
-            newUser.generateKeys();
-            newUser.save(new String(txtRegisterPass.getPassword()));
+            
+            Block selected = bc.get(index);
+            txtBlockHeader.setText(selected.getHeaderString());
+            txtBlockHeader.setCaretPosition(0);
+            txtBlockTransactions.setText(selected.getTransactionsString());
+            txtBlockTransactions.setCaretPosition(0);
 
-            myremoteObject.registerUser(newUser); // Registra o usuário no servidor
-            // Atualiza a lista de usuários
-            loadUsersFromFiles();
-            JOptionPane.showMessageDialog(this, "Usuário registrado com sucesso!");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao registrar o usuário: " + ex.getMessage());
-            txtRegisterUser.setText("");
-            txtRegisterPass.setText("");
+        } catch (RemoteException ex) {
+            onException(ex, "list selection");
         }
-    }//GEN-LAST:event_btRegisterActionPerformed
+    }//GEN-LAST:event_lstBlcockchainValueChanged
 
     /**
      * @param args the command line arguments
@@ -588,54 +611,81 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btLogin;
-    private javax.swing.JButton btRegister;
+    private javax.swing.JButton btAddTransaction;
+    private javax.swing.JButton btMining;
     private javax.swing.JButton btStartServer;
     private javax.swing.JLabel imgServerRunning;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JList<String> lstUsers;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JLabel lblMining;
+    private javax.swing.JLabel lblWinner;
+    private javax.swing.JList<String> lstBlcockchain;
+    private javax.swing.JPanel pnAbout;
+    private javax.swing.JPanel pnBlockchain;
+    private javax.swing.JPanel pnNetwork;
     private javax.swing.JPanel pnServer;
-    private javax.swing.JPasswordField txtLoginPass;
-    private javax.swing.JTextField txtLoginUser;
-    private javax.swing.JTextArea txtLstTransdactions;
+    private javax.swing.JPanel pnTransaction;
+    private javax.swing.JSpinner spZeros;
+    private javax.swing.JTabbedPane tpMain;
+    private javax.swing.JTextField txtAddress;
+    private javax.swing.JTextArea txtBlockHeader;
+    private javax.swing.JTextArea txtBlockTransactions;
+    private javax.swing.JLabel txtExceptionLog;
+    private javax.swing.JTextArea txtListTransdactions;
+    private javax.swing.JTextArea txtLogMining;
     private javax.swing.JTextArea txtNetwork;
     private javax.swing.JTextField txtNodeAddress;
-    private javax.swing.JTextArea txtPublicKey;
-    private javax.swing.JPasswordField txtRegisterPass;
-    private javax.swing.JTextField txtRegisterUser;
-    private javax.swing.JTextField txtServerListeningObjectName;
-    private javax.swing.JTextField txtServerListeningPort;
+    private javax.swing.JTextField txtObjectName;
+    private javax.swing.JTextField txtPort;
     private javax.swing.JTextPane txtServerLog;
+    private javax.swing.JLabel txtTimeLog;
+    private javax.swing.JLabel txtTitleLog;
     private javax.swing.JTextField txtTranaction;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void onStart(String message) {
+    public void onStartRemote(String message) {
+        setTitle(message);
         imgServerRunning.setEnabled(true);
         btStartServer.setEnabled(false);
         GuiUtils.addText(txtServerLog, "Start server", message);
+
     }
+    static DateTimeFormatter hfmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
     public void onException(Exception e, String title) {
-        JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
+        txtTimeLog.setText(LocalTime.now().format(hfmt));
+        txtExceptionLog.setForeground(new java.awt.Color(255, 0, 0));
+        txtExceptionLog.setText(e.getMessage());
+        txtTitleLog.setText(title);
+        // JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
+    }
+
+    @Override
+    public void onMessage(String title, String message) {
+        GuiUtils.addText(txtServerLog, title, message);
+        tpMain.setSelectedComponent(pnServer);
     }
 
     @Override
@@ -647,6 +697,7 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
                 txt += iremoteP2P.getAdress() + "\n";
             }
             txtNetwork.setText(txt);
+            tpMain.setSelectedComponent(pnNetwork);
         } catch (RemoteException ex) {
             onException(ex, "On conect");
             Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
@@ -657,52 +708,77 @@ public class NodeP2PGui extends javax.swing.JFrame implements P2Plistener {
     @Override
     public void onTransaction(String transaction) {
         try {
+            onMessage("Transaction ", transaction);
             String txt = "";
             List<String> tr = myremoteObject.getTransactions();
             for (String string : tr) {
                 txt += string + "\n";
-
             }
-            txtLstTransdactions.setText(txt);
+            txtListTransdactions.setText(txt);
+            tpMain.setSelectedComponent(pnTransaction);
         } catch (RemoteException ex) {
             onException(ex, "on transaction");
             Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void loadUsersFromFiles() {
-        try {
-            // Defina o caminho correto onde os arquivos de usuários estão sendo salvos
-            File dir = new File("keys/");
-
-            // Cria um novo modelo para a JList
-            DefaultListModel<String> userListModel = new DefaultListModel<>();
-
-            // Filtra os arquivos que possuem a extensão ".pub" (chaves públicas)
-            File[] files = dir.listFiles((d, name) -> name.endsWith(".pub"));
-
-            // Verifica se existem arquivos .pub encontrados
-            if (files != null && files.length > 0) {
-                for (File file : files) {
-                    // Extrai o nome do arquivo sem a extensão .pub (nome do usuário)
-                    String fileName = file.getName();
-                    String userName = fileName.substring(0, fileName.lastIndexOf('.'));
-
-                    // Adiciona o nome do usuário ao modelo
-                    userListModel.addElement(userName);
-                    
-                    myremoteObject.users.add(new User(userName));
-                }
-
-                // Define o modelo da JList com os nomes dos usuários
-                lstUsers.setModel(userListModel);
-            } else {
-                JOptionPane.showMessageDialog(this, "Nenhum arquivo de usuário .pub encontrado.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao carregar usuários.");
-        }
+    @Override
+    public void onStartMining(String message, int zeros) {
+        SwingUtilities.invokeLater(() -> {
+            tpMain.setSelectedComponent(pnTransaction);
+            btMining.setEnabled(false);
+            lblMining.setVisible(true);
+            lblWinner.setVisible(false);
+            txtLogMining.setText("[START]" + message + "[" + zeros + "]\n");
+            lblMining.setText("mining " + zeros + " zeros");
+            repaint();
+        });
     }
 
+    @Override
+    public void onStopMining(String message, int nonce) {
+        SwingUtilities.invokeLater(() -> {
+            txtLogMining.setText("[STOP]" + message + "[" + nonce + "]\n" + txtLogMining.getText());
+            lblMining.setVisible(false);
+            tpMain.setSelectedComponent(pnTransaction);
+            btMining.setEnabled(true);
+            txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
+            System.out.println(" NONCE " + nonce + "\t" + message);
+            repaint();
+        });
+    }
+
+    @Override
+    public void onNounceFound(String message, int nonce) {
+        try {
+            myremoteObject.stopMining(nonce);
+        } catch (RemoteException ex) {
+            Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        SwingUtilities.invokeLater(() -> {
+            txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
+            lblMining.setVisible(false);
+            lblWinner.setText(message);
+            lblWinner.setVisible(true);
+            tpMain.setSelectedComponent(pnTransaction);
+            txtTitleLog.setText(Miner.getHash(myremoteObject.myMiner.getMessage(), myremoteObject.myMiner.getNonce()));
+            repaint();
+            System.out.println(" NONCE " + nonce + "\t" + message);
+        });
+
+    }
+
+    @Override
+    public void onBlockchainUpdate(BlockChain b) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel model = new DefaultListModel();
+            for (int i = b.getSize() - 1; i >= 0; i--) {
+                model.addElement(b.get(i));
+            }
+            lstBlcockchain.setModel(model);
+            lstBlcockchain.setSelectedIndex(0);
+            tpMain.setSelectedComponent(pnBlockchain);
+            repaint();
+        });
+    }
 }

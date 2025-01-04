@@ -358,7 +358,6 @@ public class SecurityUtils {
         Cipher cipher = Cipher.getInstance(key.getAlgorithm());
         //configurar o objecto para cifrar
         cipher.init(Cipher.DECRYPT_MODE, key);
-        
         //decifrar os dados
         return cipher.doFinal(data);
     }

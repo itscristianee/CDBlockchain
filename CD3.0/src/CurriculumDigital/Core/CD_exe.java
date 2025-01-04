@@ -1,33 +1,28 @@
 package CurriculumDigital.Core;
 
 import blockchain.utils.Block;
-import blockchain.utils.BlockChain;
-import blockchain.utils.MerkleTree;
-import blockchain.utils.ObjectUtils;
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import miner.Miner;
+import blockchain.utils.MerkleTree;
+import blockchain.utils.BlockChain;
+import blockchain.utils.ObjectUtils;
 
-public class CurriculumDigital implements Serializable {
-
-    /**
-     * @return the blockchain
-     */
-    public BlockChain getBlockchain() {
-        return blockchain;
-    }
+public class CD_exe implements Serializable {
 
     private List<Evento> currentBuffer; // Buffer de eventos aguardando mineração
-    private BlockChain blockchain; // Blockchain que armazena os blocos
-    private String fileName; // Caminho do ficheiro onde a blockchain será armazenada
+    private BlockChain blockchain;     // Blockchain que armazena os blocos
+    private String fileName;           // Caminho do ficheiro onde a blockchain será armazenada
     private static final long serialVersionUID = 1L;
+    private transient Miner miner;     // Minerador (não será serializado)
 
     // Construtor que inicializa o sistema
-    public CurriculumDigital(String fileName) {
+    public CD_exe(String fileName) {
         this.fileName = fileName;
         this.currentBuffer = new ArrayList<>();
         this.blockchain = new BlockChain();
+        this.miner = new Miner(null); // Instância do minerador sem listener
 
         // Verifica se o arquivo blockchain existe e tenta carregá-lo
         File file = new File(fileName);
@@ -41,11 +36,9 @@ public class CurriculumDigital implements Serializable {
     }
 
     // Adiciona um evento ao buffer de mineração
-    public void addEvento(Evento evento) throws Exception {
+    public void addEvento(Evento evento) {
         currentBuffer.add(evento);
-
         System.out.println("Evento adicionado ao buffer: " + evento);
-
     }
 
     // Gera um bloco com os eventos do buffer e adiciona à blockchain
@@ -60,11 +53,18 @@ public class CurriculumDigital implements Serializable {
         // Serializa a Merkle Tree para armazenamento no bloco
         String serializedMerkleTree = ObjectUtils.convertObjectToBase64(mt);
 
-        // Adiciona o bloco à blockchain
-        getBlockchain().add(serializedMerkleTree, DIFFICULTY);
+        // Cria um novo bloco
+        Block newBlock = new Block(blockchain.getLastBlockHash(), List.of(serializedMerkleTree));
 
-        // Salva a Merkle Tree em um arquivo (mantém esta funcionalidade)
-        mt.saveToFile(getBlockchain().getLastBlockHash() + ".mkt");
+        // Inicia a mineração usando o minerador
+        int nonce = miner.mine(newBlock.getMinerData(), DIFFICULTY);
+        newBlock.setNonce(nonce, DIFFICULTY);
+
+        // Adiciona o bloco à blockchain
+        blockchain.add(newBlock);
+
+        // Salva a Merkle Tree em um arquivo
+        mt.saveToFile(blockchain.getLastBlockHash() + ".mkt");
 
         // Limpa o buffer após adicionar à blockchain
         currentBuffer.clear();
@@ -78,9 +78,9 @@ public class CurriculumDigital implements Serializable {
     public List<Evento> getEventos() throws Exception {
         List<Evento> eventos = new ArrayList<>();
 
-        for (Block block : getBlockchain().getChain()) {
+        for (Block block : blockchain.getChain()) {
             // Desserializa a Merkle Tree armazenada no bloco
-            MerkleTree mt = (MerkleTree) ObjectUtils.convertBase64ToObject(block.getData());
+            MerkleTree mt = (MerkleTree) ObjectUtils.convertBase64ToObject(block.getTransactions().get(0));
 
             // Adiciona todos os eventos da Merkle Tree à lista de eventos
             eventos.addAll(mt.getElements());
@@ -98,9 +98,9 @@ public class CurriculumDigital implements Serializable {
     public List<Evento> getEventosPorEntidade(String entidadeAssinante) throws Exception {
         List<Evento> eventos = new ArrayList<>();
 
-        for (Block block : getBlockchain().getChain()) {
+        for (Block block : blockchain.getChain()) {
             // Desserializa a Merkle Tree armazenada no bloco
-            MerkleTree mt = (MerkleTree) ObjectUtils.convertBase64ToObject(block.getData());
+            MerkleTree mt = (MerkleTree) ObjectUtils.convertBase64ToObject(block.getTransactions().get(0));
 
             // Filtra os eventos que foram assinados pela entidade específica
             for (Object obj : mt.getElements()) {
@@ -111,7 +111,7 @@ public class CurriculumDigital implements Serializable {
                         eventos.add(evento);
                     }
                 } else {
-                    throw new Exception("Objeto no MerkleTree não é do tipo Evento.");
+                    throw new Exception("Objeto na MerkleTree não é do tipo Evento.");
                 }
             }
         }
@@ -119,11 +119,44 @@ public class CurriculumDigital implements Serializable {
         return eventos;
     }
 
-    
+    public List<Evento> getEventosParaPessoaAutenticada(String identificadorPessoaAutenticada) throws Exception {
+        if (identificadorPessoaAutenticada == null || identificadorPessoaAutenticada.isEmpty()) {
+            throw new IllegalArgumentException("Identificador da pessoa autenticada não pode ser nulo ou vazio.");
+        }
+
+        List<Evento> eventosParaPessoa = new ArrayList<>();
+
+        // Adicionar eventos do buffer que foram assinados para a pessoa autenticada
+        for (Evento evento : currentBuffer) {
+            if (evento.getNomePessoa().equals(identificadorPessoaAutenticada)) {
+                eventosParaPessoa.add(evento);
+            }
+        }
+
+        // Adicionar eventos minerados que foram assinados para a pessoa autenticada
+        for (Block block : blockchain.getChain()) {
+            // Desserializar a Merkle Tree armazenada no bloco
+            MerkleTree mt = (MerkleTree) ObjectUtils.convertBase64ToObject(block.getTransactions().get(0));
+
+            // Filtrar eventos assinados para a pessoa autenticada
+            for (Object obj : mt.getElements()) {
+                if (obj instanceof Evento) {
+                    Evento evento = (Evento) obj;
+                    if (evento.getNomePessoa().equals(identificadorPessoaAutenticada)) {
+                        eventosParaPessoa.add(evento);
+                    }
+                } else {
+                    throw new Exception("Objeto na MerkleTree não é do tipo Evento.");
+                }
+            }
+        }
+
+        return eventosParaPessoa;
+    }
 
     // Verifica se a blockchain está íntegra
     public boolean isBlockchainValida() {
-        return getBlockchain().isValid();
+        return blockchain.isValid();
     }
 
     public void save(String fileName) throws Exception {
@@ -131,7 +164,7 @@ public class CurriculumDigital implements Serializable {
         if (!file.canWrite()) {
             throw new Exception("Não é possível salvar no arquivo: " + fileName);
         }
-        getBlockchain().save(fileName);
+        blockchain.save(fileName);
     }
 
     public void load(String fileName) throws Exception {
@@ -139,8 +172,12 @@ public class CurriculumDigital implements Serializable {
         if (!file.canRead()) {
             throw new Exception("Não é possível ler o arquivo: " + fileName);
         }
-        getBlockchain().load(fileName);
+        blockchain.load(fileName);
         currentBuffer.clear();
     }
 
+    // Getter para o blockchain
+    public BlockChain getBlockchain() {
+        return blockchain;
+    }
 }
