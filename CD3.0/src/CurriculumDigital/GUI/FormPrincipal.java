@@ -15,10 +15,10 @@
 //////////////////////////////////////////////////////////////////////////////
 package CurriculumDigital.GUI;
 
-import CurriculumDigital.Core.CD_exe;
 import CurriculumDigital.Core.Evento;
 import p2p.*;
 import CurriculumDigital.Core.User;
+import blockchain.utils.Block;
 import blockchain.utils.BlockChain;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -34,9 +34,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import blockchain.utils.GuiUtils;
+import blockchain.utils.MerkleTree;
 import blockchain.utils.RMI;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import miner.Miner;
 
 /**
  *
@@ -48,6 +53,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
     String multicastAddress = "224.0.0.1"; // multicast Address
     int port = 5000; // multicast port
+    User authenticatedUser;
 
     public FormPrincipal(int port) {
         this();
@@ -58,8 +64,12 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
         txtPort.setText(10010 + port + "");
         btStartServerActionPerformed(null);
+
         txtPublicKey.setVisible(false);
         btLoginAluno.setVisible(false);
+
+        pnCurriculo.setVisible(false);
+        pnBlockchain.setVisible(false);
     }
 
     /**
@@ -69,6 +79,9 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         initComponents();
         txtPublicKey.setVisible(false);
         btLoginAluno.setVisible(false);
+
+        pnCurriculo.setVisible(false);
+        pnBlockchain.setVisible(false);
         try {
             txtAddress.setText(InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException ex) {
@@ -106,7 +119,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         jPanel5 = new javax.swing.JPanel();
         txtNodeAddress = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        pnTransaction = new javax.swing.JPanel();
+        pnLogin = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         panel1 = new java.awt.Panel();
         lblUsername = new javax.swing.JLabel();
@@ -120,13 +133,48 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         btEntidade = new javax.swing.JButton();
         txtPublicKey = new javax.swing.JLabel();
         btLoginAluno = new javax.swing.JButton();
-        pnBlockchain = new javax.swing.JPanel();
+        pnRegistar = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtRegisterUser = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         txtRegisterPass = new javax.swing.JPasswordField();
         btRegister = new javax.swing.JButton();
+        pnCurriculo = new javax.swing.JPanel();
+        jPanel13 = new javax.swing.JPanel();
+        btAddTransaction = new javax.swing.JButton();
+        nomePessoaField = new javax.swing.JTextField();
+        descricaoEventoField = new javax.swing.JTextField();
+        entidadeField = new javax.swing.JTextField();
+        jPanel16 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtListTransdactions = new javax.swing.JTextArea();
+        jPanel17 = new javax.swing.JPanel();
+        jPanel18 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        txtLogMining = new javax.swing.JTextArea();
+        jPanel19 = new javax.swing.JPanel();
+        lblMining = new javax.swing.JLabel();
+        lblWinner = new javax.swing.JLabel();
+        jPanel20 = new javax.swing.JPanel();
+        btMining = new javax.swing.JButton();
+        spZeros = new javax.swing.JSpinner();
+        pnBlockchain = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        txtBlockHeader = new javax.swing.JTextArea();
+        jPanel11 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        txtBlockTransactions = new javax.swing.JTextArea();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        lstBlcockchain = new javax.swing.JList<>();
+        pnMerkleTree = new javax.swing.JPanel();
+        jScrollPane12 = new javax.swing.JScrollPane();
+        lstMerkleTree = new javax.swing.JList<>();
+        merkleGraphics1 = new blockchain.GUI.MerkleGraphics();
+        pnAbout = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jPanel15 = new javax.swing.JPanel();
         txtExceptionLog = new javax.swing.JLabel();
         txtTimeLog = new javax.swing.JLabel();
@@ -244,10 +292,10 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
         tpMain.addTab("P2pNetwork", new javax.swing.ImageIcon(getClass().getResource("/multimedia/p2p_32.png")), pnNetwork); // NOI18N
 
-        pnTransaction.setLayout(new java.awt.BorderLayout());
+        pnLogin.setLayout(new java.awt.BorderLayout());
 
         jPanel6.setLayout(new java.awt.BorderLayout());
-        pnTransaction.add(jPanel6, java.awt.BorderLayout.PAGE_START);
+        pnLogin.add(jPanel6, java.awt.BorderLayout.PAGE_START);
 
         lblUsername.setText("Username:");
 
@@ -355,11 +403,11 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                 .addGap(53, 53, 53))
         );
 
-        pnTransaction.add(panel1, java.awt.BorderLayout.LINE_START);
+        pnLogin.add(panel1, java.awt.BorderLayout.LINE_START);
 
-        tpMain.addTab("Login", new javax.swing.ImageIcon(getClass().getResource("/multimedia/5238442-3.png")), pnTransaction); // NOI18N
+        tpMain.addTab("Login", new javax.swing.ImageIcon(getClass().getResource("/multimedia/5238442-3.png")), pnLogin); // NOI18N
 
-        pnBlockchain.setLayout(new java.awt.BorderLayout());
+        pnRegistar.setLayout(new java.awt.BorderLayout());
 
         jLabel3.setText("Username");
 
@@ -381,7 +429,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(147, Short.MAX_VALUE)
+                .addContainerGap(411, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
@@ -392,12 +440,12 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtRegisterUser, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(140, 140, 140))
+                .addGap(307, 307, 307))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(81, 81, 81)
+                .addGap(90, 90, 90)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtRegisterUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -407,14 +455,250 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                     .addComponent(txtRegisterPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
                 .addComponent(btRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addContainerGap(286, Short.MAX_VALUE))
         );
 
-        pnBlockchain.add(jPanel2, java.awt.BorderLayout.CENTER);
+        pnRegistar.add(jPanel2, java.awt.BorderLayout.CENTER);
 
-        tpMain.addTab("Registar", new javax.swing.ImageIcon(getClass().getResource("/multimedia/png-transparent-computer-icons-user-icon-design-patient-miscellaneous-balance-symbol-2.png")), pnBlockchain); // NOI18N
+        tpMain.addTab("Registar", new javax.swing.ImageIcon(getClass().getResource("/multimedia/png-transparent-computer-icons-user-icon-design-patient-miscellaneous-balance-symbol-2.png")), pnRegistar); // NOI18N
 
-        getContentPane().add(tpMain, java.awt.BorderLayout.CENTER);
+        pnCurriculo.setLayout(new java.awt.BorderLayout());
+
+        btAddTransaction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/transaction_64.png"))); // NOI18N
+        btAddTransaction.setText("Add");
+        btAddTransaction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAddTransactionActionPerformed(evt);
+            }
+        });
+
+        nomePessoaField.setToolTipText("");
+        nomePessoaField.setBorder(javax.swing.BorderFactory.createTitledBorder("Nome da Pessoa"));
+        nomePessoaField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nomePessoaFieldActionPerformed(evt);
+            }
+        });
+
+        descricaoEventoField.setToolTipText("");
+        descricaoEventoField.setBorder(javax.swing.BorderFactory.createTitledBorder("Descrição do Evento"));
+        descricaoEventoField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                descricaoEventoFieldActionPerformed(evt);
+            }
+        });
+
+        entidadeField.setEditable(false);
+        entidadeField.setToolTipText("");
+        entidadeField.setBorder(javax.swing.BorderFactory.createTitledBorder("Entidade Certificadora"));
+        entidadeField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                entidadeFieldActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(entidadeField, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
+                    .addComponent(nomePessoaField)
+                    .addComponent(descricaoEventoField))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
+                .addComponent(btAddTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(btAddTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addComponent(descricaoEventoField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nomePessoaField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(entidadeField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pnCurriculo.add(jPanel13, java.awt.BorderLayout.PAGE_START);
+
+        jPanel16.setLayout(new java.awt.BorderLayout());
+
+        txtListTransdactions.setEditable(false);
+        txtListTransdactions.setColumns(20);
+        txtListTransdactions.setRows(5);
+        txtListTransdactions.setText("eventos..");
+        txtListTransdactions.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de eventos"));
+        jScrollPane3.setViewportView(txtListTransdactions);
+        txtListTransdactions.getAccessibleContext().setAccessibleName("");
+
+        jPanel16.add(jScrollPane3, java.awt.BorderLayout.CENTER);
+
+        jPanel17.setLayout(new java.awt.BorderLayout());
+
+        jPanel18.setLayout(new java.awt.BorderLayout());
+
+        txtLogMining.setEditable(false);
+        txtLogMining.setColumns(20);
+        txtLogMining.setRows(5);
+        txtLogMining.setBorder(javax.swing.BorderFactory.createTitledBorder("Miner Log"));
+        jScrollPane5.setViewportView(txtLogMining);
+
+        jPanel18.add(jScrollPane5, java.awt.BorderLayout.CENTER);
+
+        jPanel19.setLayout(new java.awt.BorderLayout());
+
+        lblMining.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/working.gif"))); // NOI18N
+        lblMining.setText("mining");
+        jPanel19.add(lblMining, java.awt.BorderLayout.CENTER);
+
+        lblWinner.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/winner.gif"))); // NOI18N
+        jPanel19.add(lblWinner, java.awt.BorderLayout.EAST);
+
+        jPanel18.add(jPanel19, java.awt.BorderLayout.SOUTH);
+
+        jPanel17.add(jPanel18, java.awt.BorderLayout.CENTER);
+
+        jPanel20.setLayout(new java.awt.BorderLayout());
+
+        btMining.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/1924692-2.png"))); // NOI18N
+        btMining.setText("Gerar Bloco");
+        btMining.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btMiningActionPerformed(evt);
+            }
+        });
+        jPanel20.add(btMining, java.awt.BorderLayout.CENTER);
+
+        spZeros.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        spZeros.setModel(new javax.swing.SpinnerNumberModel(3, 0, 6, 1));
+        spZeros.setBorder(javax.swing.BorderFactory.createTitledBorder("Nº Zeros"));
+        jPanel20.add(spZeros, java.awt.BorderLayout.EAST);
+
+        jPanel17.add(jPanel20, java.awt.BorderLayout.PAGE_START);
+
+        jPanel16.add(jPanel17, java.awt.BorderLayout.WEST);
+
+        pnCurriculo.add(jPanel16, java.awt.BorderLayout.CENTER);
+
+        tpMain.addTab("Curriculo", new javax.swing.ImageIcon(getClass().getResource("/multimedia/7891770-2.png")), pnCurriculo); // NOI18N
+
+        pnBlockchain.setLayout(new java.awt.BorderLayout());
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Block Data"));
+        jPanel8.setLayout(new java.awt.BorderLayout());
+
+        jPanel9.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane7.setPreferredSize(new java.awt.Dimension(252, 105));
+
+        txtBlockHeader.setEditable(false);
+        txtBlockHeader.setColumns(20);
+        txtBlockHeader.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        txtBlockHeader.setRows(5);
+        txtBlockHeader.setBorder(javax.swing.BorderFactory.createTitledBorder("Header"));
+        jScrollPane7.setViewportView(txtBlockHeader);
+
+        jPanel9.add(jScrollPane7, java.awt.BorderLayout.CENTER);
+
+        jPanel8.add(jPanel9, java.awt.BorderLayout.WEST);
+
+        jPanel11.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane6.setViewportBorder(javax.swing.BorderFactory.createTitledBorder("Transactions"));
+
+        txtBlockTransactions.setEditable(false);
+        txtBlockTransactions.setColumns(20);
+        txtBlockTransactions.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        txtBlockTransactions.setRows(5);
+        jScrollPane6.setViewportView(txtBlockTransactions);
+
+        jPanel11.add(jScrollPane6, java.awt.BorderLayout.CENTER);
+
+        jPanel8.add(jPanel11, java.awt.BorderLayout.CENTER);
+
+        pnBlockchain.add(jPanel8, java.awt.BorderLayout.PAGE_START);
+
+        lstBlcockchain.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        lstBlcockchain.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lstBlcockchainValueChanged(evt);
+            }
+        });
+        jScrollPane8.setViewportView(lstBlcockchain);
+
+        pnBlockchain.add(jScrollPane8, java.awt.BorderLayout.CENTER);
+
+        tpMain.addTab("Blockchain", new javax.swing.ImageIcon(getClass().getResource("/multimedia/blockchain_32.png")), pnBlockchain); // NOI18N
+
+        lstMerkleTree.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lstMerkleTreeValueChanged(evt);
+            }
+        });
+        jScrollPane12.setViewportView(lstMerkleTree);
+
+        javax.swing.GroupLayout merkleGraphics1Layout = new javax.swing.GroupLayout(merkleGraphics1);
+        merkleGraphics1.setLayout(merkleGraphics1Layout);
+        merkleGraphics1Layout.setHorizontalGroup(
+            merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 537, Short.MAX_VALUE)
+        );
+        merkleGraphics1Layout.setVerticalGroup(
+            merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 395, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout pnMerkleTreeLayout = new javax.swing.GroupLayout(pnMerkleTree);
+        pnMerkleTree.setLayout(pnMerkleTreeLayout);
+        pnMerkleTreeLayout.setHorizontalGroup(
+            pnMerkleTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnMerkleTreeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44)
+                .addComponent(merkleGraphics1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pnMerkleTreeLayout.setVerticalGroup(
+            pnMerkleTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnMerkleTreeLayout.createSequentialGroup()
+                .addGroup(pnMerkleTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnMerkleTreeLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(merkleGraphics1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
+        tpMain.addTab("MerkleTree", new javax.swing.ImageIcon(getClass().getResource("/multimedia/848628-2.png")), pnMerkleTree); // NOI18N
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/IMG_0572-2-3.png"))); // NOI18N
+        jLabel1.setText("(c) Cristiane Mayabanza\nTurma: A \nN°: 24639");
+
+        javax.swing.GroupLayout pnAboutLayout = new javax.swing.GroupLayout(pnAbout);
+        pnAbout.setLayout(pnAboutLayout);
+        pnAboutLayout.setHorizontalGroup(
+            pnAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnAboutLayout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 323, Short.MAX_VALUE))
+        );
+        pnAboutLayout.setVerticalGroup(
+            pnAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnAboutLayout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 344, Short.MAX_VALUE))
+        );
+
+        tpMain.addTab("About", new javax.swing.ImageIcon(getClass().getResource("/multimedia/about.png")), pnAbout); // NOI18N
+
+        getContentPane().add(tpMain, java.awt.BorderLayout.PAGE_START);
 
         jPanel15.setLayout(new java.awt.BorderLayout());
 
@@ -443,7 +727,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             String address = txtNodeAddress.getText();
             IremoteP2P node = (IremoteP2P) RMI.getRemote(address);
             myremoteObject.addNode(node);
-        } catch (Exception ex) {
+        } catch (MalformedURLException | NotBoundException | RemoteException ex) {
             onException(ex, "connect");
             Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -469,7 +753,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             Naming.rebind(address, myremoteObject);
 
             onBlockchainUpdate(myremoteObject.getBlockchain());
-        } catch (Exception ex) {
+        } catch (NumberFormatException | MalformedURLException | RemoteException ex) {
             onException(ex, "Starting server");
             Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -490,11 +774,21 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                 boolean success = myremoteObject.authenticate(username, password);
 
                 if (success) {
+
                     JOptionPane.showMessageDialog(this, "Login bem-sucedido!");
-                    User authenticatedUser = new User(username);
+                    authenticatedUser = new User(username);
                     authenticatedUser.load(password); // Carrega as chaves do utilizador autenticado
-                    new FormCurriculumDigital(authenticatedUser).setVisible(true);
-                    this.dispose();
+                    entidadeField.setText(authenticatedUser.getName());
+
+                    pnLogin.setVisible(false);
+                    pnRegistar.setVisible(false);
+
+                    pnCurriculo.setVisible(true);
+                    pnBlockchain.setVisible(true);
+                    // Após login bem-sucedido ou carregamento da blockchain
+                    loadMerkleTreesToList();
+                    setupMerkleTreeSelectionListener();
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos!");
                 }
@@ -545,22 +839,17 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                 return;
             }
 
-            // Caminho para o arquivo da blockchain
-            String blockchainFile = "./blockchain.obj";
+            // Usar o método remoto para buscar os eventos relacionados ao aluno
+            List<Evento> eventosDoAluno = myremoteObject.getEventosParaPessoaAutenticada(nomeAluno);
 
-            // Inicializar o sistema da blockchain
-            CD_exe sistema = new CD_exe(blockchainFile);
-
-            // Verificar se o nome do aluno está na blockchain
-            List<Evento> eventosDoAluno = sistema.getEventosParaPessoaAutenticada(nomeAluno);
-
+            // Verificar se o aluno foi encontrado na blockchain
             if (eventosDoAluno.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Aluno não encontrado na blockchain.");
                 return;
             }
 
             // Se o aluno foi encontrado, abrir o formulário do aluno
-            new FormAluno(nomeAluno).setVisible(true);
+            new FormAluno(nomeAluno, eventosDoAluno).setVisible(true);
             this.setVisible(false);
 
         } catch (Exception ex) {
@@ -605,8 +894,97 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
     private void tpMainStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tpMainStateChanged
         // TODO add your handling code here:
-        loadUsersFromKeysFolder();
+        if (tpMain.getSelectedComponent() == pnLogin) {
+            loadUsersFromKeysFolder(); // Atualiza a lista de utilizadores ao mudar para o painel de login
+        } else if (tpMain.getSelectedComponent() == pnMerkleTree) {
+            loadUsersFromKeysFolder(); // Atualiza a lista de utilizadores ao mudar para o painel de login
+        }
     }//GEN-LAST:event_tpMainStateChanged
+
+    private void lstBlcockchainValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstBlcockchainValueChanged
+        try {
+            BlockChain bc = myremoteObject.getBlockchain();
+            int index = bc.getSize() - lstBlcockchain.getSelectedIndex() - 1;
+            if (index < 0 || index >= bc.getSize()) {
+                return;
+            }
+
+            Block selected = bc.get(index);
+            txtBlockHeader.setText(selected.getHeaderString());
+            txtBlockHeader.setCaretPosition(0);
+            txtBlockTransactions.setText(selected.getTransactionsString());
+            txtBlockTransactions.setCaretPosition(0);
+
+        } catch (RemoteException ex) {
+            onException(ex, "list selection");
+        }
+    }//GEN-LAST:event_lstBlcockchainValueChanged
+
+    private void btAddTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddTransactionActionPerformed
+        try {
+            String nomePessoa = nomePessoaField.getText().trim();
+            String descricao = descricaoEventoField.getText().trim();
+
+            if (nomePessoa.isEmpty() || descricao.isEmpty()) {
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos."));
+                return;
+            }
+
+            Evento evento = new Evento(authenticatedUser, nomePessoa, descricao);
+
+            myremoteObject.addTransaction(evento.toString());
+        } catch (RemoteException ex) {
+            onException(ex, "transactions");
+            Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btAddTransactionActionPerformed
+
+    private void btMiningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMiningActionPerformed
+
+        new Thread(() -> {
+            try {
+                //fazer um bloco
+                List<String> blockTransactions = myremoteObject.getTransactions();
+                if (blockTransactions.size() < 0) {
+                    return;
+                }
+                Block b = new Block(myremoteObject.getBlockchainLastHash(), blockTransactions);
+                //remover as transacoes
+                myremoteObject.removeTransactions(blockTransactions);
+                //minar o bloco
+                int zeros = (Integer) spZeros.getValue();
+                int nonce = myremoteObject.mine(b.getMinerData(), zeros);
+                //atualizar o nonce
+                b.setNonce(nonce, zeros);
+                //adiconar o bloco
+                myremoteObject.addBlock(b);
+
+            } catch (Exception ex) {
+                onException(ex, "Start ming");
+                Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }).start();
+
+    }//GEN-LAST:event_btMiningActionPerformed
+
+    private void nomePessoaFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomePessoaFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nomePessoaFieldActionPerformed
+
+    private void descricaoEventoFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descricaoEventoFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_descricaoEventoFieldActionPerformed
+
+    private void entidadeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entidadeFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_entidadeFieldActionPerformed
+
+    private void lstMerkleTreeValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstMerkleTreeValueChanged
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_lstMerkleTreeValueChanged
 
     /**
      * @param args the command line arguments
@@ -907,40 +1285,75 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btAddTransaction;
     private javax.swing.JButton btAluno;
     private javax.swing.JButton btEntidade;
     private javax.swing.JButton btLogin;
     private javax.swing.JButton btLoginAluno;
+    private javax.swing.JButton btMining;
     private javax.swing.JButton btRegister;
     private javax.swing.JButton btStartServer;
+    private javax.swing.JTextField descricaoEventoField;
+    private javax.swing.JTextField entidadeField;
     private javax.swing.JLabel imgServerRunning;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JLabel lblMining;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblUsername;
+    private javax.swing.JLabel lblWinner;
+    private javax.swing.JList<String> lstBlcockchain;
+    private javax.swing.JList<String> lstMerkleTree;
     private javax.swing.JList<String> lstUsers;
+    private blockchain.GUI.MerkleGraphics merkleGraphics1;
+    private javax.swing.JTextField nomePessoaField;
     private java.awt.Panel panel1;
+    private javax.swing.JPanel pnAbout;
     private javax.swing.JPanel pnBlockchain;
+    private javax.swing.JPanel pnCurriculo;
+    private javax.swing.JPanel pnLogin;
+    private javax.swing.JPanel pnMerkleTree;
     private javax.swing.JPanel pnNetwork;
+    private javax.swing.JPanel pnRegistar;
     private javax.swing.JPanel pnServer;
-    private javax.swing.JPanel pnTransaction;
+    private javax.swing.JSpinner spZeros;
     private javax.swing.JTabbedPane tpMain;
     private javax.swing.JTextField txtAddress;
+    private javax.swing.JTextArea txtBlockHeader;
+    private javax.swing.JTextArea txtBlockTransactions;
     private javax.swing.JLabel txtExceptionLog;
+    private javax.swing.JTextArea txtListTransdactions;
+    private javax.swing.JTextArea txtLogMining;
     private javax.swing.JPasswordField txtLoginPass;
     private javax.swing.JTextField txtLoginUser;
     private javax.swing.JTextArea txtNetwork;
@@ -992,143 +1405,174 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         } catch (RemoteException ex) {
             onException(ex, "On conect");
             Logger
-                    .getLogger(FormPrincipal.class
+                    .getLogger(NodeP2PGui.class
                             .getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
-//    @Override
-//    public void onTransaction(String transaction) {
-//        try {
-//            onMessage("Transaction ", transaction);
-//            String txt = "";
-//            List<String> tr = myremoteObject.getTransactions();
-//            for (String string : tr) {
-//                txt += string + "\n";
-//            }
-//            txtListTransdactions.setText(txt);
-//            tpMain.setSelectedComponent(pnTransaction);
-//        } catch (RemoteException ex) {
-//            onException(ex, "on transaction");
-//            Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-//
-//    @Override
-//    public void onStartMining(String message, int zeros) {
-//        SwingUtilities.invokeLater(() -> {
-//            tpMain.setSelectedComponent(pnTransaction);
-//            btMining.setEnabled(false);
-//            lblMining.setVisible(true);
-//            lblWinner.setVisible(false);
-//            txtLogMining.setText("[START]" + message + "[" + zeros + "]\n");
-//            lblMining.setText("mining " + zeros + " zeros");
-//            repaint();
-//        });
-//    }
-//
-//    @Override
-//    public void onStopMining(String message, int nonce) {
-//        SwingUtilities.invokeLater(() -> {
-//            txtLogMining.setText("[STOP]" + message + "[" + nonce + "]\n" + txtLogMining.getText());
-//            lblMining.setVisible(false);
-//            tpMain.setSelectedComponent(pnTransaction);
-//            btMining.setEnabled(true);
-//            txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
-//            System.out.println(" NONCE " + nonce + "\t" + message);
-//            repaint();
-//        });
-//    }
-//
-//    @Override
-//    public void onNounceFound(String message, int nonce) {
-//        try {
-//            myremoteObject.stopMining(nonce);
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        SwingUtilities.invokeLater(() -> {
-//            txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
-//            lblMining.setVisible(false);
-//            lblWinner.setText(message);
-//            lblWinner.setVisible(true);
-//            tpMain.setSelectedComponent(pnTransaction);
-//            txtTitleLog.setText(Miner.getHash(myremoteObject.myMiner.getMessage(), myremoteObject.myMiner.getNonce()));
-//            repaint();
-//            System.out.println(" NONCE " + nonce + "\t" + message);
-//        });
-//
-//    }
-//
-//    @Override
-//    public void onBlockchainUpdate(BlockChain b) {
-//        SwingUtilities.invokeLater(() -> {
-//            DefaultListModel model = new DefaultListModel();
-//            for (int i = b.getSize() - 1; i >= 0; i--) {
-//                model.addElement(b.get(i));
-//            }
-//            lstBlcockchain.setModel(model);
-//            lstBlcockchain.setSelectedIndex(0);
-//            tpMain.setSelectedComponent(pnBlockchain);
-//            repaint();
-//        });
-//    }
-    public void loadUsersFromKeysFolder() {
+    @Override
+    public void onTransaction(String transaction) {
         try {
-            File keysFolder = new File("keys");
-            if (!keysFolder.exists() || !keysFolder.isDirectory()) {
-                JOptionPane.showMessageDialog(this, "A pasta 'keys' não foi encontrada!");
-                return;
+            onMessage("Transaction ", transaction);
+            String txt = "";
+            List<String> tr = myremoteObject.getTransactions();
+            for (String string : tr) {
+                txt += string + "\n";
             }
-
-            // Lista de utilizadores (modelo para JList)
-            DefaultListModel<String> userListModel = new DefaultListModel<>();
-
-            // Filtrar ficheiros com extensão .pub (chaves públicas)
-            File[] publicKeyFiles = keysFolder.listFiles((dir, name) -> name.endsWith(".pub"));
-
-            if (publicKeyFiles != null && publicKeyFiles.length > 0) {
-                for (File file : publicKeyFiles) {
-                    // Extrair o nome do utilizador (nome do ficheiro sem a extensão)
-                    String fileName = file.getName();
-                    String userName = fileName.substring(0, fileName.lastIndexOf('.')); // Remover ".pub"
-                    userListModel.addElement(userName);
-                }
-
-                // Atualizar o JList com os utilizadores encontrados
-                lstUsers.setModel(userListModel);
-            } else {
-                JOptionPane.showMessageDialog(this, "Nenhum utilizador encontrado na pasta 'keys'.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao carregar os utilizadores da pasta 'keys': " + e.getMessage());
+            txtListTransdactions.setText(txt);
+            tpMain.setSelectedComponent(pnLogin);
+        } catch (RemoteException ex) {
+            onException(ex, "on transaction");
+            Logger
+                    .getLogger(NodeP2PGui.class
+                            .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void onTransaction(String transaction) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public void onStartMining(String message, int zeros) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        SwingUtilities.invokeLater(() -> {
+            tpMain.setSelectedComponent(pnLogin);
+            btMining.setEnabled(false);
+            lblMining.setVisible(true);
+            lblWinner.setVisible(false);
+            txtLogMining.setText("[START]" + message + "[" + zeros + "]\n");
+            lblMining.setText("mining " + zeros + " zeros");
+            repaint();
+        });
     }
 
     @Override
     public void onStopMining(String message, int nonce) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        SwingUtilities.invokeLater(() -> {
+            txtLogMining.setText("[STOP]" + message + "[" + nonce + "]\n" + txtLogMining.getText());
+            lblMining.setVisible(false);
+            tpMain.setSelectedComponent(pnLogin);
+            btMining.setEnabled(true);
+            txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
+            System.out.println(" NONCE " + nonce + "\t" + message);
+            repaint();
+        });
     }
 
     @Override
     public void onNounceFound(String message, int nonce) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            myremoteObject.stopMining(nonce);
+
+        } catch (RemoteException ex) {
+            Logger.getLogger(NodeP2PGui.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        SwingUtilities.invokeLater(() -> {
+            txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
+            lblMining.setVisible(false);
+            lblWinner.setText(message);
+            lblWinner.setVisible(true);
+            tpMain.setSelectedComponent(pnLogin);
+            txtTitleLog.setText(Miner.getHash(myremoteObject.myMiner.getMessage(), myremoteObject.myMiner.getNonce()));
+            repaint();
+            System.out.println(" NONCE " + nonce + "\t" + message);
+        });
+
     }
 
     @Override
     public void onBlockchainUpdate(BlockChain b) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel model = new DefaultListModel();
+            for (int i = b.getSize() - 1; i >= 0; i--) {
+                model.addElement(b.get(i));
+            }
+            lstBlcockchain.setModel(model);
+            lstBlcockchain.setSelectedIndex(0);
+            tpMain.setSelectedComponent(pnRegistar);
+            repaint();
+        });
     }
+
+    private void loadUsersFromKeysFolder() {
+        try {
+            File keysFolder = new File("keys");
+
+            // Cria um modelo para a lista de utilizadores
+            DefaultListModel<String> userListModel = new DefaultListModel<>();
+
+            // Lista os ficheiros .pub
+            File[] publicKeyFiles = keysFolder.listFiles((dir, name) -> name.endsWith(".pub"));
+            if (publicKeyFiles != null) {
+                for (File file : publicKeyFiles) {
+                    // Extrai o nome do utilizador
+                    String fileName = file.getName();
+                    String userName = fileName.substring(0, fileName.lastIndexOf('.'));
+                    userListModel.addElement(userName);
+                }
+            }
+
+            // Atualiza a JList com os nomes dos utilizadores
+            lstUsers.setModel(userListModel);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar os utilizadores: " + e.getMessage());
+            Logger
+                    .getLogger(FormPrincipal.class
+                            .getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    private void loadMerkleTreesToList() {
+        new Thread(() -> {
+            try {
+                if (myremoteObject == null) {
+                    JOptionPane.showMessageDialog(this, "O servidor não está inicializado. Por favor, inicie o servidor primeiro.");
+                    return;
+                }
+
+                // Obter os blocos da blockchain
+                List<Block> blockchain = myremoteObject.getBlockchain().getChain();
+
+                if (blockchain.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "A blockchain está vazia. Nenhum bloco foi encontrado.");
+                    return;
+                }
+
+                // Criar o modelo para a JList
+                DefaultListModel<String> model = new DefaultListModel<>();
+                for (Block block : blockchain) {
+                    model.addElement(block.getCurrentHash()); // Usar o hash atual do bloco
+                }
+
+                // Atualizar a JList com o modelo
+                SwingUtilities.invokeLater(() -> lstMerkleTree.setModel(model));
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao carregar os hashes da blockchain: " + ex.getMessage());
+                Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }).start();
+    }
+
+    private void setupMerkleTreeSelectionListener() {
+        lstMerkleTree.addListSelectionListener(evt -> {
+            if (!evt.getValueIsAdjusting()) {
+                try {
+                    // Obter o hash selecionado na lista
+                    String selectedHash = lstMerkleTree.getSelectedValue();
+
+                    if (selectedHash != null) {
+                        // Obter a Merkle Tree correspondente
+                        MerkleTree selectedMerkleTree = myremoteObject.getMerkleTreeByBlock(selectedHash);
+
+                        // Mostrar a Merkle Tree no gráfico
+                        merkleGraphics1.setMerkle(selectedMerkleTree);
+                        merkleGraphics1.repaint();
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao carregar a Merkle Tree: " + ex.getMessage());
+                    Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+
 }

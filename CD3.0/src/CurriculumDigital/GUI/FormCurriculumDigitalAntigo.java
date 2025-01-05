@@ -8,7 +8,12 @@ import CurriculumDigital.Core.CD_exe;
 import CurriculumDigital.Core.Evento;
 import CurriculumDigital.Core.User;
 import blockchain.utils.Block;
+import blockchain.utils.BlockChain;
 import blockchain.utils.MerkleTree;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,12 +21,16 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import miner.Miner;
+import p2p.IremoteP2P;
+import p2p.NodeP2PGui;
+import p2p.OremoteP2P;
 
 /**
  *
  * @author cristiane
  */
-public class FormCurriculumDigital extends javax.swing.JFrame {
+public class FormCurriculumDigitalAntigo extends javax.swing.JFrame {
 
     User myUser;
     // Lista de eventos que é mantida durante a execução
@@ -29,11 +38,17 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
     private List<Evento> lstBuffer;
     private DefaultListModel listModel;
     private CD_exe sistema;
+    OremoteP2P myremoteObject;
+    String multicastAddress = "224.0.0.1"; // multicast Address
+    int port = 5000; // multicast port
+    int serverPort;
+    String name;
+    String host;
 
     /**
      * Creates new form NewJFrame
      */
-    public FormCurriculumDigital() {
+    public FormCurriculumDigitalAntigo() {
         initComponents();
 
         // Inicializar o modelo da lista
@@ -61,11 +76,15 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
-    public FormCurriculumDigital(User u) throws Exception {
+    public FormCurriculumDigitalAntigo(User u, int serverPort, String name, String host, OremoteP2P myremoteObject) throws Exception {
         this(); // Chama o construtor padrão
         this.myUser = u;
         this.entidadeField.setText(u.getName()); // Preenche o campo entidade com o nome do utilizador
 
+        this.serverPort = serverPort;
+        this.name = name;
+        this.host = host;
+        this.myremoteObject = myremoteObject;
         // Atualiza a interface com os eventos do utilizador logado
         atualizarInterface(u.getName());
     }
@@ -453,12 +472,14 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
 
     private void addEventoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventoButtonActionPerformed
         // TODO add your handling code here:
+
 // Desabilita os botões enquanto a operação está em andamento
         btnGerarBloco.setEnabled(false);
         addEventoButton.setEnabled(false);
 
         new Thread(() -> {
             try {
+                //create adress of remote object
                 // Obtém os dados do formulário
                 String nomePessoa = nomePessoaField.getText().trim();
                 String descricao = descricaoEventoField.getText().trim();
@@ -468,57 +489,72 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
                     return;
                 }
 
-                System.out.println("Criando evento...");
                 Evento evento = new Evento(myUser, nomePessoa, descricao);
-
-                // Adiciona o evento ao sistema e salva a blockchain
-                System.out.println("Adicionando evento ao sistema...");
-                sistema.addEvento(evento);
-
-                System.out.println("Salvando blockchain...");
-
-                sistema.save("./blockchain.obj");
-
-                // Atualiza a interface no EDT (Event Dispatch Thread)
-                SwingUtilities.invokeLater(() -> {
-                    try {
-                        atualizarInterface(entidadeField.getText());
-                        atualizarBlockchainUI();
-
-                        // Adiciona o nome da pessoa à lista, evitando duplicados
-                        if (!listModel.contains(nomePessoa)) {
-                            listModel.addElement(nomePessoa);
-                            lstPessoas.setModel(listModel); // Atualiza a JList
-                        }
-
-                        // Exibe o evento na área de texto
-                        txtEventos.append(evento.toString() + "\n");
-
-                        // Limpa os campos de entrada
-                        nomePessoaField.setText("");
-                        descricaoEventoField.setText("");
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(this, "Erro ao atualizar interface: " + ex.getMessage());
-                    } finally {
-                        // Reabilita os botões após a operação
-                        addEventoButton.setEnabled(true);
-                        btnGerarBloco.setEnabled(true);
-                    }
-                });
-
+                String address = String.format("//%s:%d/%s", host, serverPort, name);
+                //link adress to object
+                Naming.rebind(address, myremoteObject);
+                myremoteObject.addTransaction(evento.toString());
             } catch (Exception ex) {
-                // Mostra o erro na GUI
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "Erro ao adicionar evento: " + ex.getMessage()));
-                ex.printStackTrace();
-            } finally {
-                // Reabilita os botões em caso de erro
-                SwingUtilities.invokeLater(() -> {
-                    addEventoButton.setEnabled(true);
-                    btnGerarBloco.setEnabled(true);
-                });
+                Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }).start();
 
+//        new Thread(() -> {
+//            try {
+//                // Obtém os dados do formulário
+//                String nomePessoa = nomePessoaField.getText().trim();
+//                String descricao = descricaoEventoField.getText().trim();
+//
+//                if (nomePessoa.isEmpty() || descricao.isEmpty()) {
+//                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos."));
+//                    return;
+//                }
+//
+//                Evento evento = new Evento(myUser, nomePessoa, descricao);
+//
+//                sistema.addEvento(evento);
+//
+//                sistema.save("./blockchain.obj");
+//
+//                // Atualiza a interface no EDT (Event Dispatch Thread)
+//                SwingUtilities.invokeLater(() -> {
+//                    try {
+//                        atualizarInterface(entidadeField.getText());
+//                        atualizarBlockchainUI();
+//
+//                        // Adiciona o nome da pessoa à lista, evitando duplicados
+//                        if (!listModel.contains(nomePessoa)) {
+//                            listModel.addElement(nomePessoa);
+//                            lstPessoas.setModel(listModel); // Atualiza a JList
+//                        }
+//
+//                        // Exibe o evento na área de texto
+//                        txtEventos.append(evento.toString() + "\n");
+//
+//                        // Limpa os campos de entrada
+//                        nomePessoaField.setText("");
+//                        descricaoEventoField.setText("");
+//                    } catch (Exception ex) {
+//                        JOptionPane.showMessageDialog(this, "Erro ao atualizar interface: " + ex.getMessage());
+//                    } finally {
+//                        // Reabilita os botões após a operação
+//                        addEventoButton.setEnabled(true);
+//                        btnGerarBloco.setEnabled(true);
+//                    }
+//                });
+//
+//            } catch (Exception ex) {
+//                // Mostra o erro na GUI
+//                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "Erro ao adicionar evento: " + ex.getMessage()));
+//                ex.printStackTrace();
+//            } finally {
+//                // Reabilita os botões em caso de erro
+//                SwingUtilities.invokeLater(() -> {
+//                    addEventoButton.setEnabled(true);
+//                    btnGerarBloco.setEnabled(true);
+//                });
+//            }
+//        }).start();
 
     }//GEN-LAST:event_addEventoButtonActionPerformed
 
@@ -534,27 +570,49 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
 //        
 //        ou, o que é exatamente a mesma coisa
         btnGerarBloco.setEnabled(false);
-
         new Thread(() -> {
             try {
-                sistema.gerarBloco((int) spNovoBlockDificuldade.getValue());
-
-                SwingUtilities.invokeLater(() -> {
-                    try {
-                        atualizarInterface(entidadeField.getText());
-                        atualizarBlockchainUI(); // Atualiza a lista de blocos
-                    } catch (Exception ex) {
-                        Logger.getLogger(FormCurriculumDigital.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    txtMinado.setText("Novo bloco gerado!");
-                    btnGerarBloco.setEnabled(true);
-                });
+                //fazer um bloco
+                List<String> blockTransactions = myremoteObject.getTransactions();
+                if (blockTransactions.size() < 0) {
+                    return;
+                }
+                Block b = new Block(myremoteObject.getBlockchainLastHash(), blockTransactions);
+                //remover as transacoes
+                myremoteObject.removeTransactions(blockTransactions);
+                //minar o bloco
+                int zeros = (Integer) spNovoBlockDificuldade.getValue();
+                int nonce = myremoteObject.mine(b.getMinerData(), zeros);
+                //atualizar o nonce
+                b.setNonce(nonce, zeros);
+                //adiconar o bloco
+                myremoteObject.addBlock(b);
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Erro ao gerar bloco: " + ex.getMessage());
+                onException(ex, "Start ming");
+                Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
             }
         }).start();
 
+//        new Thread(() -> {
+//            try {
+//                sistema.gerarBloco((int) spNovoBlockDificuldade.getValue());
+//
+//                SwingUtilities.invokeLater(() -> {
+//                    try {
+//                        atualizarInterface(entidadeField.getText());
+//                        atualizarBlockchainUI(); // Atualiza a lista de blocos
+//                    } catch (Exception ex) {
+//                        Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                    txtMinado.setText("Novo bloco gerado!");
+//                    btnGerarBloco.setEnabled(true);
+//                });
+//
+//            } catch (Exception ex) {
+//                JOptionPane.showMessageDialog(this, "Erro ao gerar bloco: " + ex.getMessage());
+//            }
+//        }).start();
 
     }//GEN-LAST:event_btnGerarBlocoActionPerformed
 
@@ -573,14 +631,14 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
                     //txtNovoBloco.setText(mt.getElementsString());
                     merkleGraphics1.setMerkle(mt);
                 } catch (Exception ex) {
-                    Logger.getLogger(FormCurriculumDigital.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             });
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            Logger.getLogger(FormCurriculumDigital.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_lstBlockchainValueChanged
 
@@ -646,7 +704,7 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
             // TODO add your handling code here:
             new FormPrincipal().setVisible(true);
         } catch (Exception ex) {
-            Logger.getLogger(FormCurriculumDigital.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.setVisible(false);
     }//GEN-LAST:event_btLogout1btAcercaActionPerformed
@@ -668,14 +726,22 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculumDigital.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculumDigital.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculumDigital.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormCurriculumDigital.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FormCurriculumDigitalAntigo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -688,7 +754,7 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FormCurriculumDigital().setVisible(true);
+                new FormCurriculumDigitalAntigo().setVisible(true);
             }
         });
     }
@@ -725,4 +791,122 @@ public class FormCurriculumDigital extends javax.swing.JFrame {
     private javax.swing.JTextArea txtEventos;
     private javax.swing.JLabel txtMinado;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onStartRemote(String message) {
+        setTitle(message);
+        imgServerRunning.setEnabled(true);
+        btStartServer.setEnabled(false);
+        GuiUtils.addText(txtServerLog, "Start server", message);
+
+    }
+    static DateTimeFormatter hfmt = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+
+    public void onException(Exception e, String title) {
+        txtTimeLog.setText(LocalTime.now().format(hfmt));
+        txtExceptionLog.setForeground(new java.awt.Color(255, 0, 0));
+        txtExceptionLog.setText(e.getMessage());
+        txtTitleLog.setText(title);
+        // JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
+    }
+
+    @Override
+    public void onMessage(String title, String message) {
+        GuiUtils.addText(txtServerLog, title, message);
+        tpMain.setSelectedComponent(pnServer);
+    }
+
+    @Override
+    public void onConect(String address) {
+        try {
+            List<IremoteP2P> net = myremoteObject.getNetwork();
+            String txt = "";
+            for (IremoteP2P iremoteP2P : net) {
+                txt += iremoteP2P.getAdress() + "\n";
+            }
+            txtNetwork.setText(txt);
+            tpMain.setSelectedComponent(pnNetwork);
+        } catch (RemoteException ex) {
+            onException(ex, "On conect");
+            Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    @Override
+    public void onTransaction(String transaction) {
+        try {
+            onMessage("Transaction ", transaction);
+            String txt = "";
+            List<String> tr = myremoteObject.getTransactions();
+            for (String string : tr) {
+                txt += string + "\n";
+            }
+            txtListTransdactions.setText(txt);
+            tpMain.setSelectedComponent(pnTransaction);
+        } catch (RemoteException ex) {
+            onException(ex, "on transaction");
+            Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void onStartMining(String message, int zeros) {
+        SwingUtilities.invokeLater(() -> {
+            tpMain.setSelectedComponent(pnTransaction);
+            btMining.setEnabled(false);
+            lblMining.setVisible(true);
+            lblWinner.setVisible(false);
+            txtLogMining.setText("[START]" + message + "[" + zeros + "]\n");
+            lblMining.setText("mining " + zeros + " zeros");
+            repaint();
+        });
+    }
+
+    @Override
+    public void onStopMining(String message, int nonce) {
+        SwingUtilities.invokeLater(() -> {
+            txtLogMining.setText("[STOP]" + message + "[" + nonce + "]\n" + txtLogMining.getText());
+            lblMining.setVisible(false);
+            tpMain.setSelectedComponent(pnTransaction);
+            btMining.setEnabled(true);
+            txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
+            System.out.println(" NONCE " + nonce + "\t" + message);
+            repaint();
+        });
+    }
+
+    @Override
+    public void onNounceFound(String message, int nonce) {
+        try {
+            myremoteObject.stopMining(nonce);
+        } catch (RemoteException ex) {
+            Logger.getLogger(NodeP2PGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        SwingUtilities.invokeLater(() -> {
+            txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
+            lblMining.setVisible(false);
+            lblWinner.setText(message);
+            lblWinner.setVisible(true);
+            tpMain.setSelectedComponent(pnTransaction);
+            txtTitleLog.setText(Miner.getHash(myremoteObject.myMiner.getMessage(), myremoteObject.myMiner.getNonce()));
+            repaint();
+            System.out.println(" NONCE " + nonce + "\t" + message);
+        });
+
+    }
+
+    @Override
+    public void onBlockchainUpdate(BlockChain b) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel model = new DefaultListModel();
+            for (int i = b.getSize() - 1; i >= 0; i--) {
+                model.addElement(b.get(i));
+            }
+            lstBlcockchain.setModel(model);
+            lstBlcockchain.setSelectedIndex(0);
+            tpMain.setSelectedComponent(pnBlockchain);
+            repaint();
+        });
+    }
 }

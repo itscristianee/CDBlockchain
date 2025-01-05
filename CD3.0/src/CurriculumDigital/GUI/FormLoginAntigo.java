@@ -239,7 +239,7 @@ public class FormLoginAntigo extends javax.swing.JFrame {
 
             String pub = Base64.getEncoder().encodeToString(u.getPubKey().getEncoded());
             txtPublicKey.setText(pub);
-            new FormCurriculumDigital(u).setVisible(true);
+            new FormCurriculumDigitalAntigo(u).setVisible(true);
             this.setVisible(false);
         } catch (Exception ex) {
             Logger.getLogger(FormLoginAntigo.class.getName()).log(Level.SEVERE, null, ex);

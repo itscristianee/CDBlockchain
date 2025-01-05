@@ -6,8 +6,6 @@ package CurriculumDigital.GUI;
 
 import CurriculumDigital.Core.CD_exe;
 import CurriculumDigital.Core.Evento;
-import CurriculumDigital.Core.User;
-import java.lang.System.Logger.Level;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -24,29 +22,27 @@ public class FormAluno extends javax.swing.JFrame {
     private List<Evento> lstBuffer;
     private DefaultListModel listModel;
     private CD_exe sistema;
+    List<Evento> eventosDoAluno;
 
     /**
      * Creates new form FormAluno
      */
-    public FormAluno(String u) throws Exception {
+    public FormAluno(String u, List<Evento> eventosDoAluno) throws Exception {
         this(); // Chama o construtor padrão
         this.myUser = u;
         this.pessoaField.setText(u); // Preenche o campo entidade com o nome do utilizador
-
+        this.eventosDoAluno = eventosDoAluno;
         // Atualiza a interface com os eventos do utilizador logado
-        atualizarInterface(myUser);
+        atualizarInterface();
     }
 
-    private void atualizarInterface(String pessoa) throws Exception {
-        // Obtém os eventos relacionados à pessoa autenticada
-        List<Evento> eventosFiltrados = sistema.getEventosParaPessoaAutenticada(pessoa);
+    private void atualizarInterface() throws Exception {
 
         // Atualiza o modelo do JList (lstEventos)
         listModel.clear(); // Limpa a lista atual
-        for (Evento evento : eventosFiltrados) {
-            if (!listModel.contains(evento.getNomePessoa())) {
-                listModel.addElement(evento.getNomePessoa());
-            }
+        for (Evento evento : eventosDoAluno) {
+            listModel.addElement(evento.toString());
+
         }
 
         // Atualiza o JList com o novo modelo
@@ -61,14 +57,6 @@ public class FormAluno extends javax.swing.JFrame {
         // Associar o listModel à lista de pessoas
         lstEventos.setModel(listModel);
 
-        String blockchainFile = "./blockchain.obj";
-        sistema = new CD_exe(blockchainFile);
-
-        try {
-            sistema.load(blockchainFile);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar blockchain: " + e.getMessage());
-        }
         // Inicializar a barra de pesquisa
         inicializarPesquisa();
         setLocationRelativeTo(null);

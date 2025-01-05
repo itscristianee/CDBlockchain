@@ -15,9 +15,11 @@
 //////////////////////////////////////////////////////////////////////////////
 package p2p;
 
+import CurriculumDigital.Core.Evento;
 import blockchain.utils.Block;
 import blockchain.utils.BlockChain;
 import CurriculumDigital.Core.User;
+import blockchain.utils.MerkleTree;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class OremoteP2P extends UnicastRemoteObject implements IremoteP2P {
     CopyOnWriteArraySet<String> transactions;
     P2Plistener p2pListener;
     //objeto mineiro concorrente e distribuido
-    Miner myMiner;
+    public Miner myMiner;
     //objeto da blockchain preparada para cesso concorrente
     BlockChain myBlockchain;
 
@@ -326,9 +328,8 @@ public class OremoteP2P extends UnicastRemoteObject implements IremoteP2P {
         }
         return allTransactions;
     }
-    
+
     //    LOGIN  
-    
     public synchronized boolean register(String username, String password) throws RemoteException {
         try {
             // Verificar se o utilizador já existe
@@ -369,6 +370,61 @@ public class OremoteP2P extends UnicastRemoteObject implements IremoteP2P {
         }
     }
 
-    
-    
+    public Object getMyMiner() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public List<Evento> getEventosParaPessoaAutenticada(String identificadorPessoaAutenticada) throws RemoteException {
+        if (identificadorPessoaAutenticada == null || identificadorPessoaAutenticada.isEmpty()) {
+            throw new IllegalArgumentException("Identificador da pessoa autenticada não pode ser nulo ou vazio.");
+        }
+
+        List<Evento> eventosParaPessoa = new ArrayList<>();
+
+        try {
+            // Iterar sobre todas as transações na blockchain
+            for (Block block : myBlockchain.getChain()) {
+                for (String transaction : block.transactions()) {
+                    // Processar a transação para extrair informações
+                    String[] parts = transaction.split(" \\| ");
+                    if (parts.length == 3) {
+                        String nomePessoa = parts[0].trim();
+                        String descricao = parts[1].trim();
+                        String entidade = parts[2].trim();
+
+                        // Verificar se o nome da pessoa coincide com o identificador autenticado
+                        if (nomePessoa.equals(identificadorPessoaAutenticada)) {
+                            // Criar um objeto Evento com os dados extraídos
+                            Evento evento = new Evento(nomePessoa, descricao, entidade);
+                            eventosParaPessoa.add(evento);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RemoteException("Erro ao obter eventos para a pessoa autenticada: " + e.getMessage(), e);
+        }
+
+        return eventosParaPessoa;
+    }
+
+    public List<String> getMerkleTrees() throws Exception {
+        List<String> merkleTrees = new ArrayList<>();
+
+        for (Block block : myBlockchain.getChain()) {
+            MerkleTree merkleTree = new MerkleTree(block.getTransactions()); // Recria a árvore Merkle a partir das transações
+            merkleTrees.add("Block Hash: " + block.getCurrentHash() + "\nMerkle Root: " + merkleTree.getRoot() + "\n" + merkleTree);
+        }
+        return merkleTrees;
+    }
+
+    public MerkleTree getMerkleTreeByBlock(String blockHash) throws Exception {
+        for (Block block : myBlockchain.getChain()) {
+            if (block.getCurrentHash().equals(blockHash)) {
+                return new MerkleTree(block.getTransactions());
+            }
+        }
+        throw new Exception("Bloco não encontrado para o hash fornecido: " + blockHash);
+    }
+
 }
