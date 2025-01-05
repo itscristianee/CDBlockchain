@@ -407,6 +407,34 @@ public class OremoteP2P extends UnicastRemoteObject implements IremoteP2P {
 
         return eventosParaPessoa;
     }
+    
+    public List<String> getPessoas() throws RemoteException {
+        
+
+        List<String> Pessoas = new ArrayList<>();
+
+        try {
+            // Iterar sobre todas as transações na blockchain
+            for (Block block : myBlockchain.getChain()) {
+                for (String transaction : block.transactions()) {
+                    // Processar a transação para extrair informações
+                    String[] parts = transaction.split(" \\| ");
+                    if (parts.length == 3) {
+                        String nomePessoa = parts[0].trim();
+                        // Verificar se o nome da pessoa coincide com o identificador autenticado
+                        if (!Pessoas.contains(nomePessoa)) {
+                            // Criar um objeto Evento com os dados extraídos
+                            Pessoas.add(nomePessoa);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RemoteException("Erro ao obter eventos para a pessoa autenticada: " + e.getMessage(), e);
+        }
+
+        return Pessoas;
+    }
 
     public List<String> getMerkleTrees() throws Exception {
         List<String> merkleTrees = new ArrayList<>();

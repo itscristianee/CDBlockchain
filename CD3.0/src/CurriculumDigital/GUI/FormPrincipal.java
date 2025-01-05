@@ -67,7 +67,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
         txtPublicKey.setVisible(false);
         btLoginAluno.setVisible(false);
-        
+
         setVisibility(false);
 
     }
@@ -326,6 +326,11 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         jScrollPane4.setViewportView(lstUsers);
 
         btAluno.setText("Aluno");
+        btAluno.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btAlunoMouseClicked(evt);
+            }
+        });
         btAluno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btAlunoActionPerformed(evt);
@@ -333,6 +338,11 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         });
 
         btEntidade.setText("Entidade");
+        btEntidade.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btEntidadeMouseClicked(evt);
+            }
+        });
         btEntidade.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btEntidadeActionPerformed(evt);
@@ -818,7 +828,6 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                     authenticatedUser.load(password); // Carrega as chaves do utilizador autenticado
                     entidadeField.setText(authenticatedUser.getName());
 
-                    
                     // Após login bem-sucedido ou carregamento da blockchain
                     setVisibility(true);
                     loadMerkleTreesToList();
@@ -850,6 +859,8 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
     private void btAlunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAlunoActionPerformed
         // TODO add your handling code here:
+        
+        loadPessoasFromBlockchain();
         btLogin.setVisible(false);
         btLoginAluno.setVisible(true);
         txtLoginPass.setVisible(false);
@@ -859,6 +870,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
     private void btEntidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEntidadeActionPerformed
         // TODO add your handling code here:
+        loadUsersFromKeysFolder();
         btLogin.setVisible(true);
         btLoginAluno.setVisible(false);
         txtLoginPass.setVisible(true);
@@ -997,6 +1009,8 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                 b.setNonce(nonce, zeros);
                 //adiconar o bloco
                 myremoteObject.addBlock(b);
+                loadMerkleTreesToList();
+                setupMerkleTreeSelectionListener();
 
             } catch (Exception ex) {
                 onException(ex, "Start ming");
@@ -1027,6 +1041,16 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         // TODO add your handling code here:
         setVisibility(false);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btEntidadeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btEntidadeMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btEntidadeMouseClicked
+
+    private void btAlunoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btAlunoMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btAlunoMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1428,7 +1452,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         txtExceptionLog.setForeground(new java.awt.Color(255, 0, 0));
         txtExceptionLog.setText(e.getMessage());
         txtTitleLog.setText(title);
-       // JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
+        // JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
     }
 
     @Override
@@ -1532,7 +1556,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             }
             lstBlcockchain.setModel(model);
             lstBlcockchain.setSelectedIndex(0);
-            tpMain.setSelectedComponent(pnCurriculo);
+            tpMain.setSelectedComponent(pnNetwork);
             repaint();
         });
     }
@@ -1599,43 +1623,65 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
     private void setupMerkleTreeSelectionListener() {
         lstMerkleTree.addListSelectionListener(evt -> {
-            if (!evt.getValueIsAdjusting()) {
-                try {
-                    // Obter o hash selecionado na lista
-                    String selectedHash = lstMerkleTree.getSelectedValue();
+            new Thread(() -> {
+                if (!evt.getValueIsAdjusting()) {
+                    try {
+                        // Obter o hash selecionado na lista
+                        String selectedHash = lstMerkleTree.getSelectedValue();
 
-                    if (selectedHash != null) {
-                        // Obter a Merkle Tree correspondente
-                        MerkleTree selectedMerkleTree = myremoteObject.getMerkleTreeByBlock(selectedHash);
+                        if (selectedHash != null) {
+                            // Obter a Merkle Tree correspondente
+                            MerkleTree selectedMerkleTree = myremoteObject.getMerkleTreeByBlock(selectedHash);
 
-                        // Mostrar a Merkle Tree no gráfico
-                        merkleGraphics1.setMerkle(selectedMerkleTree);
-                        merkleGraphics1.repaint();
+                            // Mostrar a Merkle Tree no gráfico
+                            merkleGraphics1.setMerkle(selectedMerkleTree);
+                            merkleGraphics1.repaint();
+                        }
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(this, "Erro ao carregar a Merkle Tree: " + ex.getMessage());
+                        Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Erro ao carregar a Merkle Tree: " + ex.getMessage());
-                    Logger.getLogger(FormPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            }).start();
         });
     }
 
     private void setVisibility(boolean isAuthenticated) {
-    tpMain.setEnabledAt(tpMain.indexOfComponent(pnCurriculo), isAuthenticated);
-    tpMain.setEnabledAt(tpMain.indexOfComponent(pnBlockchain), isAuthenticated);
-    tpMain.setEnabledAt(tpMain.indexOfComponent(pnMerkleTree), isAuthenticated);
-    tpMain.setEnabledAt(tpMain.indexOfComponent(pnLogout), isAuthenticated);
+        tpMain.setEnabledAt(tpMain.indexOfComponent(pnCurriculo), isAuthenticated);
+        tpMain.setEnabledAt(tpMain.indexOfComponent(pnBlockchain), isAuthenticated);
+        tpMain.setEnabledAt(tpMain.indexOfComponent(pnMerkleTree), isAuthenticated);
+        tpMain.setEnabledAt(tpMain.indexOfComponent(pnLogout), isAuthenticated);
 
-        
-    tpMain.setEnabledAt(tpMain.indexOfComponent(pnLogin), !isAuthenticated);
-    tpMain.setEnabledAt(tpMain.indexOfComponent(pnRegistar), !isAuthenticated);
+        tpMain.setEnabledAt(tpMain.indexOfComponent(pnLogin), !isAuthenticated);
+        tpMain.setEnabledAt(tpMain.indexOfComponent(pnRegistar), !isAuthenticated);
 
-    // Define o painel inicial, dependendo do estado
-    if (isAuthenticated) {
-        tpMain.setSelectedComponent(pnCurriculo);
-    } else {
-        tpMain.setSelectedComponent(pnServer);
+        // Define o painel inicial, dependendo do estado
+        if (isAuthenticated) {
+            tpMain.setSelectedComponent(pnCurriculo);
+        } else {
+            tpMain.setSelectedComponent(pnServer);
+        }
     }
-}
 
+    private void loadPessoasFromBlockchain() {
+        try {
+            // Cria um modelo para a lista de utilizadores
+            DefaultListModel<String> userListModel = new DefaultListModel<>();
+            // Usar o método remoto para buscar os eventos relacionados ao aluno
+            List<String> Alunos = myremoteObject.getPessoas();
+
+            for (String aluno : Alunos) {
+                // Extrai o nome do utilizador
+                userListModel.addElement(aluno);
+            }
+
+            // Atualiza a JList com os nomes dos utilizadores
+            lstUsers.setModel(userListModel);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar os utilizadores: " + e.getMessage());
+            Logger
+                    .getLogger(FormPrincipal.class
+                            .getName()).log(Level.SEVERE, null, e);
+        }
+    }
 }
