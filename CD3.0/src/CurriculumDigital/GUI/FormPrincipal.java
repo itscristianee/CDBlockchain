@@ -1428,7 +1428,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         txtExceptionLog.setForeground(new java.awt.Color(255, 0, 0));
         txtExceptionLog.setText(e.getMessage());
         txtTitleLog.setText(title);
-        JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
+       // JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
     }
 
     @Override
@@ -1466,7 +1466,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                 txt += string + "\n";
             }
             txtListTransdactions.setText(txt);
-            tpMain.setSelectedComponent(pnLogin);
+            tpMain.setSelectedComponent(pnCurriculo);
         } catch (RemoteException ex) {
             onException(ex, "on transaction");
             Logger
@@ -1532,7 +1532,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             }
             lstBlcockchain.setModel(model);
             lstBlcockchain.setSelectedIndex(0);
-            tpMain.setSelectedComponent(pnNetwork);
+            tpMain.setSelectedComponent(pnBlockchain);
             repaint();
         });
     }
