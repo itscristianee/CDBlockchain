@@ -175,6 +175,8 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         pnAbout = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        pnLogout = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
         jPanel15 = new javax.swing.JPanel();
         txtExceptionLog = new javax.swing.JLabel();
         txtTimeLog = new javax.swing.JLabel();
@@ -455,7 +457,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                     .addComponent(txtRegisterPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
                 .addComponent(btRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(286, Short.MAX_VALUE))
+                .addContainerGap(228, Short.MAX_VALUE))
         );
 
         pnRegistar.add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -681,6 +683,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/IMG_0572-2-3.png"))); // NOI18N
         jLabel1.setText("(c) Cristiane Mayabanza\nTurma: A \nN°: 24639");
 
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/joao-2.jpg"))); // NOI18N
         jLabel2.setText("(c) Joao Campos\nTurma: A \nN°: 25269");
 
         javax.swing.GroupLayout pnAboutLayout = new javax.swing.GroupLayout(pnAbout);
@@ -701,10 +704,37 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 125, Short.MAX_VALUE))
+                .addGap(0, 67, Short.MAX_VALUE))
         );
 
         tpMain.addTab("About", new javax.swing.ImageIcon(getClass().getResource("/multimedia/about.png")), pnAbout); // NOI18N
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/1828407-2.png"))); // NOI18N
+        jButton2.setText("Sair");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnLogoutLayout = new javax.swing.GroupLayout(pnLogout);
+        pnLogout.setLayout(pnLogoutLayout);
+        pnLogoutLayout.setHorizontalGroup(
+            pnLogoutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnLogoutLayout.createSequentialGroup()
+                .addGap(387, 387, 387)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(394, Short.MAX_VALUE))
+        );
+        pnLogoutLayout.setVerticalGroup(
+            pnLogoutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnLogoutLayout.createSequentialGroup()
+                .addContainerGap(169, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(165, 165, 165))
+        );
+
+        tpMain.addTab("", new javax.swing.ImageIcon(getClass().getResource("/multimedia/3094700-2.png")), pnLogout); // NOI18N
 
         getContentPane().add(tpMain, java.awt.BorderLayout.PAGE_START);
 
@@ -793,7 +823,9 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                     setVisibility(true);
                     loadMerkleTreesToList();
                     setupMerkleTreeSelectionListener();
-
+                    tpMain.setSelectedComponent(pnCurriculo);
+                    txtLoginUser.setText("");
+                    txtLoginPass.setText("");
                 } else {
                     JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos!");
                 }
@@ -990,6 +1022,11 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_lstMerkleTreeValueChanged
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        setVisibility(false);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1302,6 +1339,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
     private javax.swing.JTextField entidadeField;
     private javax.swing.JLabel imgServerRunning;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1348,6 +1386,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
     private javax.swing.JPanel pnBlockchain;
     private javax.swing.JPanel pnCurriculo;
     private javax.swing.JPanel pnLogin;
+    private javax.swing.JPanel pnLogout;
     private javax.swing.JPanel pnMerkleTree;
     private javax.swing.JPanel pnNetwork;
     private javax.swing.JPanel pnRegistar;
@@ -1389,7 +1428,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         txtExceptionLog.setForeground(new java.awt.Color(255, 0, 0));
         txtExceptionLog.setText(e.getMessage());
         txtTitleLog.setText(title);
-        // JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, e.getMessage(), title, JOptionPane.WARNING_MESSAGE);
     }
 
     @Override
@@ -1407,7 +1446,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                 txt += iremoteP2P.getAdress() + "\n";
             }
             txtNetwork.setText(txt);
-            tpMain.setSelectedComponent(pnNetwork);
+            tpMain.setSelectedComponent(pnLogin);
         } catch (RemoteException ex) {
             onException(ex, "On conect");
             Logger
@@ -1439,7 +1478,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
     @Override
     public void onStartMining(String message, int zeros) {
         SwingUtilities.invokeLater(() -> {
-            tpMain.setSelectedComponent(pnLogin);
+            tpMain.setSelectedComponent(pnCurriculo);
             btMining.setEnabled(false);
             lblMining.setVisible(true);
             lblWinner.setVisible(false);
@@ -1454,7 +1493,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         SwingUtilities.invokeLater(() -> {
             txtLogMining.setText("[STOP]" + message + "[" + nonce + "]\n" + txtLogMining.getText());
             lblMining.setVisible(false);
-            tpMain.setSelectedComponent(pnLogin);
+            tpMain.setSelectedComponent(pnCurriculo);
             btMining.setEnabled(true);
             txtLogMining.setText("Nounce Found [" + nonce + "]\n" + txtLogMining.getText());
             System.out.println(" NONCE " + nonce + "\t" + message);
@@ -1476,7 +1515,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             lblMining.setVisible(false);
             lblWinner.setText(message);
             lblWinner.setVisible(true);
-            tpMain.setSelectedComponent(pnLogin);
+            tpMain.setSelectedComponent(pnCurriculo);
             txtTitleLog.setText(Miner.getHash(myremoteObject.myMiner.getMessage(), myremoteObject.myMiner.getNonce()));
             repaint();
             System.out.println(" NONCE " + nonce + "\t" + message);
@@ -1493,7 +1532,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             }
             lstBlcockchain.setModel(model);
             lstBlcockchain.setSelectedIndex(0);
-            tpMain.setSelectedComponent(pnRegistar);
+            tpMain.setSelectedComponent(pnNetwork);
             repaint();
         });
     }
@@ -1581,13 +1620,22 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         });
     }
 
-    private void setVisibility(boolean a) {
-        pnCurriculo.setVisible(a);
-        pnBlockchain.setVisible(a);
-        pnMerkleTree.setVisible(a);
-        pnLogin.setVisible(!a);
-        pnRegistar.setVisible(!a);
+    private void setVisibility(boolean isAuthenticated) {
+    tpMain.setEnabledAt(tpMain.indexOfComponent(pnCurriculo), isAuthenticated);
+    tpMain.setEnabledAt(tpMain.indexOfComponent(pnBlockchain), isAuthenticated);
+    tpMain.setEnabledAt(tpMain.indexOfComponent(pnMerkleTree), isAuthenticated);
+    tpMain.setEnabledAt(tpMain.indexOfComponent(pnLogout), isAuthenticated);
 
+        
+    tpMain.setEnabledAt(tpMain.indexOfComponent(pnLogin), !isAuthenticated);
+    tpMain.setEnabledAt(tpMain.indexOfComponent(pnRegistar), !isAuthenticated);
 
+    // Define o painel inicial, dependendo do estado
+    if (isAuthenticated) {
+        tpMain.setSelectedComponent(pnCurriculo);
+    } else {
+        tpMain.setSelectedComponent(pnServer);
     }
+}
+
 }
