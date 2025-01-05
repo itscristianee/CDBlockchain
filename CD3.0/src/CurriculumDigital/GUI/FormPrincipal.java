@@ -1532,7 +1532,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             }
             lstBlcockchain.setModel(model);
             lstBlcockchain.setSelectedIndex(0);
-            tpMain.setSelectedComponent(pnBlockchain);
+            tpMain.setSelectedComponent(pnNetwork);
             repaint();
         });
     }
