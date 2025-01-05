@@ -67,9 +67,9 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
         txtPublicKey.setVisible(false);
         btLoginAluno.setVisible(false);
+        
+        setVisibility(false);
 
-        pnCurriculo.setVisible(false);
-        pnBlockchain.setVisible(false);
     }
 
     /**
@@ -80,8 +80,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         txtPublicKey.setVisible(false);
         btLoginAluno.setVisible(false);
 
-        pnCurriculo.setVisible(false);
-        pnBlockchain.setVisible(false);
+        setVisibility(false);
         try {
             txtAddress.setText(InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException ex) {
@@ -175,6 +174,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         merkleGraphics1 = new blockchain.GUI.MerkleGraphics();
         pnAbout = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jPanel15 = new javax.swing.JPanel();
         txtExceptionLog = new javax.swing.JLabel();
         txtTimeLog = new javax.swing.JLabel();
@@ -681,6 +681,8 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/multimedia/IMG_0572-2-3.png"))); // NOI18N
         jLabel1.setText("(c) Cristiane Mayabanza\nTurma: A \nN°: 24639");
 
+        jLabel2.setText("(c) Joao Campos\nTurma: A \nN°: 25269");
+
         javax.swing.GroupLayout pnAboutLayout = new javax.swing.GroupLayout(pnAbout);
         pnAbout.setLayout(pnAboutLayout);
         pnAboutLayout.setHorizontalGroup(
@@ -688,12 +690,18 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             .addGroup(pnAboutLayout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 323, Short.MAX_VALUE))
+            .addGroup(pnAboutLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnAboutLayout.setVerticalGroup(
             pnAboutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnAboutLayout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 344, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 125, Short.MAX_VALUE))
         );
 
         tpMain.addTab("About", new javax.swing.ImageIcon(getClass().getResource("/multimedia/about.png")), pnAbout); // NOI18N
@@ -780,12 +788,9 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                     authenticatedUser.load(password); // Carrega as chaves do utilizador autenticado
                     entidadeField.setText(authenticatedUser.getName());
 
-                    pnLogin.setVisible(false);
-                    pnRegistar.setVisible(false);
-
-                    pnCurriculo.setVisible(true);
-                    pnBlockchain.setVisible(true);
+                    
                     // Após login bem-sucedido ou carregamento da blockchain
+                    setVisibility(true);
                     loadMerkleTreesToList();
                     setupMerkleTreeSelectionListener();
 
@@ -1298,6 +1303,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
     private javax.swing.JLabel imgServerRunning;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
@@ -1575,4 +1581,13 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         });
     }
 
+    private void setVisibility(boolean a) {
+        pnCurriculo.setVisible(a);
+        pnBlockchain.setVisible(a);
+        pnMerkleTree.setVisible(a);
+        pnLogin.setVisible(!a);
+        pnRegistar.setVisible(!a);
+
+
+    }
 }
