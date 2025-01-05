@@ -232,7 +232,7 @@ public class FormAluno extends javax.swing.JFrame {
 
     private void btLogout1btAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLogout1btAcercaActionPerformed
         try {
-            new FormLoginAntigo().setVisible(true); // Exibe o formulário de login
+            new FormPrincipal().setVisible(true); // Exibe o formulário de login
             this.dispose(); // Fecha o formulário atual
         } catch (Exception ex) {
             Logger.getLogger(FormAluno.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
