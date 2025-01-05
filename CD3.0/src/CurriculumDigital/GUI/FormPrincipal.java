@@ -888,7 +888,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
                 }
             } catch (Exception ex) {
-                Logger.getLogger(FormLoginAntigo.class
+                Logger.getLogger(FormPrincipal.class
                         .getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, "Erro ao criar o User!");
                 txtRegisterUser.setText("");
