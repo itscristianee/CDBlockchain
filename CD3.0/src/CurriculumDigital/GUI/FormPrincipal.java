@@ -362,10 +362,10 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+            .addGroup(panel1Layout.createSequentialGroup()
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(45, Short.MAX_VALUE)
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panel1Layout.createSequentialGroup()
                                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -380,12 +380,12 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                                     .addComponent(btEntidade, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(btLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btLoginAluno, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18))
+                        .addGap(35, 35, 35))
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addGap(204, 204, 204)
                         .addComponent(txtPublicKey, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(7, 7, 7))
         );
         panel1Layout.setVerticalGroup(
@@ -659,11 +659,11 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         merkleGraphics1.setLayout(merkleGraphics1Layout);
         merkleGraphics1Layout.setHorizontalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 537, Short.MAX_VALUE)
+            .addGap(0, 615, Short.MAX_VALUE)
         );
         merkleGraphics1Layout.setVerticalGroup(
             merkleGraphics1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 395, Short.MAX_VALUE)
+            .addGap(0, 439, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout pnMerkleTreeLayout = new javax.swing.GroupLayout(pnMerkleTree);
@@ -875,6 +875,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         btLoginAluno.setVisible(false);
         txtLoginPass.setVisible(true);
         lblPassword.setVisible(true);
+        lblUsername.setText("Username:");
     }//GEN-LAST:event_btEntidadeActionPerformed
 
     private void btLoginAlunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoginAlunoActionPerformed
