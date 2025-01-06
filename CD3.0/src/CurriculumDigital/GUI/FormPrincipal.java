@@ -54,6 +54,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
     String multicastAddress = "224.0.0.1"; // multicast Address
     int port = 5000; // multicast port
     User authenticatedUser;
+    boolean loged;
 
     public FormPrincipal(int port) {
         this();
@@ -835,6 +836,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
                     tpMain.setSelectedComponent(pnCurriculo);
                     txtLoginUser.setText("");
                     txtLoginPass.setText("");
+                    loged = true;
                 } else {
                     JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos!");
                 }
@@ -859,7 +861,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
     private void btAlunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAlunoActionPerformed
         // TODO add your handling code here:
-        
+
         loadPessoasFromBlockchain();
         btLogin.setVisible(false);
         btLoginAluno.setVisible(true);
@@ -947,8 +949,10 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
         if (tpMain.getSelectedComponent() == pnLogin) {
             loadUsersFromKeysFolder(); // Atualiza a lista de utilizadores ao mudar para o painel de login
         } else if (tpMain.getSelectedComponent() == pnMerkleTree) {
-            loadUsersFromKeysFolder(); // Atualiza a lista de utilizadores ao mudar para o painel de login
+            loadMerkleTreesToList();
+            setupMerkleTreeSelectionListener(); // Atualiza a lista de merkletree 
         }
+
     }//GEN-LAST:event_tpMainStateChanged
 
     private void lstBlcockchainValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstBlcockchainValueChanged
@@ -1045,12 +1049,12 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
 
     private void btEntidadeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btEntidadeMouseClicked
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_btEntidadeMouseClicked
 
     private void btAlunoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btAlunoMouseClicked
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_btAlunoMouseClicked
 
     /**
@@ -1557,7 +1561,11 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
             }
             lstBlcockchain.setModel(model);
             lstBlcockchain.setSelectedIndex(0);
-            tpMain.setSelectedComponent(pnNetwork);
+            if (loged) {
+                tpMain.setSelectedComponent(pnBlockchain);
+            } else {
+                tpMain.setSelectedComponent(pnNetwork);
+            }
             repaint();
         });
     }
