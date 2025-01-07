@@ -54,7 +54,7 @@ public class FormPrincipal extends javax.swing.JFrame implements P2Plistener {
     String multicastAddress = "224.0.0.1"; // multicast Address
     int port = 5000; // multicast port
     User authenticatedUser;
-    boolean loged;
+    boolean loged=false;
 
     public FormPrincipal(int port) {
         this();
